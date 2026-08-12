@@ -20,6 +20,14 @@ Pre-build design approved. Implementation will follow the security-first tracer-
 
 The pre-build Technical Design Document is available at [docs/TDD.md](docs/TDD.md). It will be reconciled with the deployed implementation before submission so any design changes or SOW deviations remain explicit.
 
+## Delivery plan
+
+- [Requirements](docs/requirements.md) — observable, testable outcomes traced from the SOW.
+- [Roadmap](docs/roadmap.md) — dependency-ordered outcome phases.
+- [Implementation tickets](docs/tickets/) — vertical slices with blockers, acceptance criteria, and requirement coverage.
+
+These documents are the implementation source of truth and will be updated when delivered behavior changes.
+
 ## Security priorities
 
 - Database-enforced private ride histories
