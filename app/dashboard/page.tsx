@@ -8,6 +8,7 @@ import { computeStats, type CoasterSummary, type RideWithCoaster } from '@/lib/r
 import { localToday } from '@/lib/dates';
 import { LogRideForm } from '@/components/log-ride-form';
 import { StatsPanel } from '@/components/stats';
+import { LeaderboardToggle } from '@/components/leaderboard-toggle';
 import { RideList } from '@/components/ride-list';
 
 export const metadata: Metadata = { title: 'Dashboard · Credit Count' };
@@ -83,6 +84,22 @@ export default async function DashboardPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {/* Navigation convenience only — /admin and the catalogue policies
+              both re-derive the role, so hiding this grants nothing. */}
+          {user.app_metadata?.is_admin === true && (
+            <Link
+              className="rounded-md border border-black/15 px-3 py-2 text-sm dark:border-white/20"
+              href="/admin"
+            >
+              Admin
+            </Link>
+          )}
+          <Link
+            className="rounded-md border border-black/15 px-3 py-2 text-sm dark:border-white/20"
+            href="/leaderboard"
+          >
+            Leaderboard
+          </Link>
           <Link
             className="rounded-md border border-black/15 px-3 py-2 text-sm dark:border-white/20"
             href="/coasters"
@@ -114,6 +131,20 @@ export default async function DashboardPage() {
           {problems.map((problem) => (
             <p key={problem}>{problem}</p>
           ))}
+        </div>
+      )}
+
+      {/* Only rendered from a profile that actually loaded: a toggle defaulted
+          from missing data could misreport participation. */}
+      {profile && (
+        <div className="mt-6 flex flex-wrap items-start justify-between gap-3 rounded-lg border border-black/10 p-4 dark:border-white/15">
+          <div>
+            <h2 className="text-sm font-semibold">Public leaderboard</h2>
+            <p className="mt-1 text-sm opacity-70">
+              Your rides, dates, and notes are never shared.
+            </p>
+          </div>
+          <LeaderboardToggle optedIn={profile.leaderboard_opt_in} />
         </div>
       )}
 

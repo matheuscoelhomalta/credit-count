@@ -1,10 +1,34 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { expect, type Page } from '@playwright/test';
 
 export const enthusiastEmail = process.env.TEST_ENTHUSIAST_EMAIL!;
 export const enthusiastPassword = process.env.TEST_ENTHUSIAST_PASSWORD!;
 export const adminEmail = process.env.TEST_ADMIN_EMAIL!;
 export const adminPassword = process.env.TEST_ADMIN_PASSWORD!;
+
+// Supabase caps password sign-ins at 30 per five minutes per IP, and the
+// browser flows spend most of that budget signing in through the real form.
+// The out-of-band fixture clients below are therefore signed in once each.
+const clients = new Map<string, Promise<SupabaseClient>>();
+
+function apiClient(email: string, password: string): Promise<SupabaseClient> {
+  const cached = clients.get(email);
+  if (cached) return cached;
+
+  const pending = (async () => {
+    const client = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+      { auth: { persistSession: false, autoRefreshToken: false } },
+    );
+    const { error } = await client.auth.signInWithPassword({ email, password });
+    if (error) throw new Error(`fixture sign-in failed for ${email}: ${error.message}`);
+    return client;
+  })();
+
+  clients.set(email, pending);
+  return pending;
+}
 
 /**
  * Removes every ride belonging to the given account so a flow starts from a
@@ -16,20 +40,31 @@ export const adminPassword = process.env.TEST_ADMIN_PASSWORD!;
  * which chains them, rather than starting them as parallel jobs.
  */
 export async function resetRides(email: string, password: string): Promise<void> {
-  const client = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    { auth: { persistSession: false, autoRefreshToken: false } },
-  );
-
-  const { error: authError } = await client.auth.signInWithPassword({ email, password });
-  if (authError) throw new Error(`resetRides sign-in failed: ${authError.message}`);
+  const client = await apiClient(email, password);
 
   const { error } = await client
     .from('rides')
     .delete()
     .neq('id', '00000000-0000-0000-0000-000000000000');
   if (error) throw new Error(`resetRides delete failed: ${error.message}`);
+}
+
+/**
+ * Reads the account's own profile through the Data API. Used to learn the
+ * display name the leaderboard will publish, rather than hard-coding it.
+ */
+export async function readProfile(
+  email: string,
+  password: string,
+): Promise<{ display_name: string; leaderboard_opt_in: boolean }> {
+  const client = await apiClient(email, password);
+
+  const { data, error } = await client
+    .from('profiles')
+    .select('display_name, leaderboard_opt_in')
+    .single();
+  if (error || !data) throw new Error(`readProfile failed: ${error?.message}`);
+  return data;
 }
 
 export async function signIn(page: Page, email: string, password: string) {

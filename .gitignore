@@ -19,3 +19,8 @@ test-results/
 # Local files
 .DS_Store
 *.log
+
+# Working notes, not part of the deliverable
+HANDOFF.md
+test-results/
+playwright-report/

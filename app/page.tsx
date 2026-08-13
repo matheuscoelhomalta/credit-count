@@ -44,10 +44,17 @@ export default async function HomePage() {
             </Link>
           </>
         )}
+        <Link
+          className="rounded-md border border-black/15 px-4 py-2.5 font-medium dark:border-white/20"
+          href="/leaderboard"
+        >
+          Leaderboard
+        </Link>
       </div>
 
       <p className="text-sm opacity-60">
-        The public leaderboard arrives in a later slice.
+        The leaderboard shows only display names and credit counts, and only for
+        enthusiasts who opted in.
       </p>
     </main>
   );

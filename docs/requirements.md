@@ -8,7 +8,7 @@
 
 ### Access and accounts
 
-- [ ] **R-001:** A signed-out visitor can view the public leaderboard and reach sign-up, while no private profile, catalogue, ride, note, or coaster-level history is accessible through the UI or Data API.
+- [x] **R-001:** A signed-out visitor can view the public leaderboard and reach sign-up, while no private profile, catalogue, ride, note, or coaster-level history is accessible through the UI or Data API.
 - [x] **R-002:** A visitor can create an enthusiast account with email, password, and display name, and the new profile is excluded from the leaderboard by default.
 - [x] **R-003:** An enthusiast can sign in and out through a cookie-based session that refreshes correctly in the deployed Next.js application without being treated as the authorization boundary.
 
@@ -28,20 +28,20 @@
 
 ### Public leaderboard
 
-- [ ] **R-012:** An enthusiast can opt into or out of public ranking, and opting out removes them from public results on the next request without revealing their ride history.
-- [ ] **R-013:** The anonymous leaderboard ranks opted-in profiles by distinct credit count and returns only display name and credit count through a fixed, argument-free database interface.
+- [x] **R-012:** An enthusiast can opt into or out of public ranking, and opting out removes them from public results on the next request without revealing their ride history.
+- [x] **R-013:** The anonymous leaderboard ranks opted-in profiles by distinct credit count and returns only display name and credit count through a fixed, argument-free database interface.
 
 ### Catalogue administration
 
-- [ ] **R-014:** A manually designated administrator can add and edit catalogue entries and soft-retire duplicates or obsolete coasters, while preserved historical rides continue contributing to their owners' statistics.
-- [ ] **R-015:** An enthusiast cannot create, edit, retire, or delete catalogue entries through the UI or direct API; administrator status is derived only from non-user-editable authorization data and takes effect after token refresh.
-- [ ] **R-016:** Administrator catalogue privileges do not grant access to any other user's ride history, dates, notes, or personal statistics.
+- [x] **R-014:** A manually designated administrator can add and edit catalogue entries and soft-retire duplicates or obsolete coasters, while preserved historical rides continue contributing to their owners' statistics.
+- [x] **R-015:** An enthusiast cannot create, edit, retire, or delete catalogue entries through the UI or direct API; administrator status is derived only from non-user-editable authorization data and takes effect after token refresh.
+- [x] **R-016:** Administrator catalogue privileges do not grant access to any other user's ride history, dates, notes, or personal statistics.
 
 ### Security verification
 
-- [ ] **R-017:** Explicit database grants and operation-specific Row Level Security policies enforce the complete anonymous, enthusiast-owner, other-user, and administrator access matrix for every exposed table.
-- [ ] **R-018:** The public leaderboard function uses a fixed, fully qualified aggregate implementation with a safe search path and explicitly restricted execute privileges, and exposes no base-table access or fields beyond display name and credit count.
-- [ ] **R-019:** Automated direct-API tests prove anonymous exposure, cross-user isolation, forged ownership rejection, prohibited catalogue mutation, admin catalogue access, retired-coaster rejection, opt-out behavior, and distinct-credit counting.
+- [x] **R-017:** Explicit database grants and operation-specific Row Level Security policies enforce the complete anonymous, enthusiast-owner, other-user, and administrator access matrix for every exposed table.
+- [x] **R-018:** The public leaderboard function uses a fixed, fully qualified aggregate implementation with a safe search path and explicitly restricted execute privileges, and exposes no base-table access or fields beyond display name and credit count.
+- [x] **R-019:** Automated direct-API tests prove anonymous exposure, cross-user isolation, forged ownership rejection, prohibited catalogue mutation, admin catalogue access, retired-coaster rejection, opt-out behavior, and distinct-credit counting.
 - [x] **R-020:** No secret/service-role key, database credential, demo password, or other elevated secret appears in client code, the built browser bundle, or the public repository.
 
 ### Usability and delivery

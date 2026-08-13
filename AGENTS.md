@@ -69,7 +69,10 @@ These already hold in the codebase. Preserve them unless a ticket explicitly cha
 - **Ownership is a column grant, not only a policy.** `rides.user_id` defaults to `auth.uid()` and is withheld from the INSERT grant; `user_id` and `coaster_id` are withheld from UPDATE and frozen by a trigger. New write paths and new columns must keep ownership unforgeable at the privilege layer, not just in RLS.
 - **Revoke function EXECUTE by name.** Supabase default privileges grant EXECUTE to `anon` and `authenticated` on every new function in `public`; `revoke ... from public` does not remove them. Every new function needs explicit revokes, and SECURITY DEFINER functions must end up executable by no API role that does not need them.
 - **Coasters are never deleted.** No API role holds DELETE. Admin removal is `active = false`. Test fixtures must therefore be idempotent rather than uniquely named per run.
-- **Anonymous callers hold no base-table privileges.** Public data is exposed only through the hardened leaderboard RPC.
+- **Anonymous callers hold no base-table privileges.** Public data is exposed only through `public.leaderboard()`, the hardened zero-argument RPC. Anything new that must be public goes through a function shaped the same way, never a grant.
+- **PostgREST refuses an unqualified UPDATE or DELETE** (`21000: UPDATE requires a WHERE clause`), so every mutation needs a filter even when RLS already scopes it to one row. Derive the filter value from the verified session, never from the request body.
+- **Admin checks in the UI are cosmetic.** `app_metadata.is_admin` may decide what to render; the `coasters` policies re-derive the same claim from the verified JWT and are the only thing that authorizes a write.
+- **Supabase caps password sign-ins at 30 per five minutes per IP.** Both test suites cache one signed-in client per identity for out-of-band fixtures; `test:api` runs `--no-file-parallelism --no-isolate` so that cache spans its files. Do not add per-test sign-ins.
 - **`proxy.ts` is session refresh and optimistic redirects only** — never an authorization layer.
 - **Node is pinned to 22** via `.nvmrc` and `engines`; run tooling under it.
 - **Redirect targets from user input** must be resolved against a fixed origin, rejecting backslash and traversal forms, not prefix-matched.

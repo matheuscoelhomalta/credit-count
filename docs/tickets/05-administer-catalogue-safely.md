@@ -6,13 +6,13 @@
 
 **Covers:** R-014, R-015, R-016, R-017, R-019
 
-**Status:** ready-for-agent
+**Status:** complete
 
 **Timebox:** 55 minutes
 
-- [ ] Refreshed application metadata determines admin catalogue privileges; user-editable metadata cannot grant the role.
-- [ ] An admin can add, edit, and soft-retire entries through the UI and direct API.
-- [ ] Enthusiasts cannot create, edit, retire, or delete catalogue entries through either surface.
-- [ ] Referenced coasters cannot be destructively deleted; retirement preserves historical rides and their contribution to owner statistics.
-- [ ] Admin credentials cannot read or mutate another user's rides, notes, dates, or personal statistics.
-- [ ] Direct-API tests prove admin catalogue access, enthusiast denial, token-refresh behavior, and continued ride isolation.
+- [x] Refreshed application metadata determines admin catalogue privileges; user-editable metadata cannot grant the role.
+- [x] An admin can add, edit, and soft-retire entries through the UI and direct API.
+- [x] Enthusiasts cannot create, edit, retire, or delete catalogue entries through either surface.
+- [x] Referenced coasters cannot be destructively deleted; retirement preserves historical rides and their contribution to owner statistics.
+- [x] Admin credentials cannot read or mutate another user's rides, notes, dates, or personal statistics.
+- [x] Direct-API tests prove admin catalogue access, enthusiast denial, token-refresh behavior, and continued ride isolation.

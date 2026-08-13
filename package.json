@@ -11,7 +11,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test:api": "vitest run --dir tests/api --no-file-parallelism",
+    "test:api": "vitest run --dir tests/api --no-file-parallelism --no-isolate",
     "test:e2e": "playwright test",
     "test:unit": "vitest run --dir tests/unit",
     "test": "npm run test:unit && npm run test:api && npm run test:e2e"

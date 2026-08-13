@@ -36,23 +36,33 @@ export type Identity = {
   email: string;
 };
 
-export async function signInAs(
-  emailVar: string,
-  passwordVar: string,
-): Promise<Identity> {
-  const email = required(emailVar);
-  const password = required(passwordVar);
-  const client = rawClient();
+// Supabase caps password sign-ins at 30 per five minutes per IP. Each identity
+// is therefore signed in once and shared: the api suite runs with
+// --no-file-parallelism --no-isolate so this cache spans all of its files.
+const sessions = new Map<string, Promise<Identity>>();
 
-  const { data, error } = await client.auth.signInWithPassword({
-    email,
-    password,
-  });
-  if (error || !data.user) {
-    throw new Error(`Could not sign in ${emailVar}: ${error?.message}`);
-  }
+export function signInAs(emailVar: string, passwordVar: string): Promise<Identity> {
+  const cached = sessions.get(emailVar);
+  if (cached) return cached;
 
-  return { client, userId: data.user.id, email };
+  const pending = (async () => {
+    const email = required(emailVar);
+    const password = required(passwordVar);
+    const client = rawClient();
+
+    const { data, error } = await client.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error || !data.user) {
+      throw new Error(`Could not sign in ${emailVar}: ${error?.message}`);
+    }
+
+    return { client, userId: data.user.id, email };
+  })();
+
+  sessions.set(emailVar, pending);
+  return pending;
 }
 
 export const enthusiast = () =>

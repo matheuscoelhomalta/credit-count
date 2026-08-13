@@ -63,7 +63,7 @@ Admin status will be assigned manually in Supabase `app_metadata`, which users c
 
 ### Public leaderboard
 
-Anonymous callers receive no base-table privileges. The sole public data interface is a fixed, zero-argument SQL function returning only `display_name` and distinct `credit_count` for opted-in profiles.
+Anonymous callers receive no base-table privileges. The sole public data interface is `public.leaderboard()`, a fixed, zero-argument SQL function returning only `display_name` and distinct `credit_count` for opted-in profiles.
 
 This narrow `SECURITY DEFINER` exception will:
 
@@ -74,6 +74,8 @@ This narrow `SECURITY DEFINER` exception will:
 - exclude user IDs, ride IDs, dates, notes, coaster identities, and coaster-level history.
 
 Opting out updates the profile row and removes that user from the next leaderboard response.
+
+Participants are joined to their rides with a `LEFT JOIN`, so an opted-in enthusiast with no rides yet appears with a zero count rather than silently missing from the board they just joined. Opted-out profiles are excluded entirely — never shown as a zero — so absence never distinguishes "no rides" from "not participating".
 
 ## 5. User flows
 
