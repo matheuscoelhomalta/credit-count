@@ -51,8 +51,8 @@
 - [x] **R-023:** A stable Vercel production URL serves the signed-out leaderboard and supports authentication, ride logging, statistics, opt-in changes, and catalogue administration against the deployed Supabase project.
 - [ ] **R-024:** One verified enthusiast account and one verified administrator account are ready for the reviewer, with credentials transmitted outside source control.
 - [x] **R-025:** A separate public delivery repository contains the application, locked dependencies, reproducible database migrations and seed data, automated tests, setup documentation, and environment-variable names without private project-control material.
-- [ ] **R-026:** A one-to-three-page TDD accurately describes the deployed architecture, data/security model, assumptions, trade-offs, material free-tier behavior, and every deviation from the SOW.
-- [ ] **R-027:** A concise review-call brief provides a reliable demonstration order and explains security, AI-assisted delivery, trade-offs, next improvements, and an approach to a plausible v2 change.
+- [x] **R-026:** A one-to-three-page TDD accurately describes the deployed architecture, data/security model, assumptions, trade-offs, material free-tier behavior, and every deviation from the SOW.
+- [x] **R-027:** A concise review-call brief provides a reliable demonstration order and explains security, AI-assisted delivery, trade-offs, next improvements, and an approach to a plausible v2 change.
 
 ## Later
 

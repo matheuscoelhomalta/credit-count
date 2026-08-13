@@ -23,7 +23,10 @@ The leaderboard is public — it is the one page a signed-out visitor can see.
 
 ## Design
 
-The pre-build Technical Design Document is available at [docs/TDD.md](docs/TDD.md). It will be reconciled with the deployed implementation before submission so any design changes or SOW deviations remain explicit.
+- [Technical Design Document](docs/TDD.md) — reconciled with the deployed
+  system. Section 8 lists every assumption, trade-off, and SOW deviation.
+- [Review brief](docs/review-brief.md) — demonstration order, the security model
+  in brief, and where the design would go next.
 
 ## Delivery plan
 
