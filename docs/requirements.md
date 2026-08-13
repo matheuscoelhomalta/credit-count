@@ -9,8 +9,8 @@
 ### Access and accounts
 
 - [ ] **R-001:** A signed-out visitor can view the public leaderboard and reach sign-up, while no private profile, catalogue, ride, note, or coaster-level history is accessible through the UI or Data API.
-- [ ] **R-002:** A visitor can create an enthusiast account with email, password, and display name, and the new profile is excluded from the leaderboard by default.
-- [ ] **R-003:** An enthusiast can sign in and out through a cookie-based session that refreshes correctly in the deployed Next.js application without being treated as the authorization boundary.
+- [x] **R-002:** A visitor can create an enthusiast account with email, password, and display name, and the new profile is excluded from the leaderboard by default.
+- [x] **R-003:** An enthusiast can sign in and out through a cookie-based session that refreshes correctly in the deployed Next.js application without being treated as the authorization boundary.
 
 ### Catalogue and ride logging
 
@@ -42,7 +42,7 @@
 - [ ] **R-017:** Explicit database grants and operation-specific Row Level Security policies enforce the complete anonymous, enthusiast-owner, other-user, and administrator access matrix for every exposed table.
 - [ ] **R-018:** The public leaderboard function uses a fixed, fully qualified aggregate implementation with a safe search path and explicitly restricted execute privileges, and exposes no base-table access or fields beyond display name and credit count.
 - [ ] **R-019:** Automated direct-API tests prove anonymous exposure, cross-user isolation, forged ownership rejection, prohibited catalogue mutation, admin catalogue access, retired-coaster rejection, opt-out behavior, and distinct-credit counting.
-- [ ] **R-020:** No secret/service-role key, database credential, demo password, or other elevated secret appears in client code, the built browser bundle, or the public repository.
+- [x] **R-020:** No secret/service-role key, database credential, demo password, or other elevated secret appears in client code, the built browser bundle, or the public repository.
 
 ### Usability and delivery
 
