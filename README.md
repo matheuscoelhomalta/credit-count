@@ -6,7 +6,7 @@ This repository contains the delivery implementation for the Koin Limited AI Pro
 
 ## Status
 
-In progress. Ticket 01 (authentication and the private-by-default data boundary) is implemented and verified against a live Supabase project; ride logging, statistics, the leaderboard, and catalogue administration follow.
+In progress. Authentication, ride logging, personal statistics, history management, the opt-in public leaderboard, and catalogue administration are implemented and verified against a live Supabase project. Deployment and the final design reconciliation follow.
 
 ## Stack
 
@@ -92,6 +92,15 @@ between flows, so overlapping runs would destroy each other's fixtures.
 `test:api` deliberately authenticates with the publishable key alone, so it can
 only prove what a real Data API caller can reach. It is the primary security
 evidence; the browser flows prove the visible SOW behavior.
+
+`tests/e2e/journeys.spec.ts` holds the two flows the assessment asks for — the
+visitor/enthusiast happy path and administrator catalogue management — and both
+run at desktop and phone viewports. The other browser specs are narrower
+regressions around them.
+
+Supabase caps password sign-ins at 30 per five minutes per IP address. A full
+`npm test` run sits under that, but two runs in quick succession can trip it and
+surface as `Request rate limit reached`; wait a few minutes and re-run.
 
 Supabase's own linter should also stay clean:
 

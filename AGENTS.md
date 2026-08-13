@@ -60,7 +60,7 @@ If they conflict, stop and reconcile them instead of silently choosing one. The 
 - Keep setup, migration, testing, and deployment instructions reproducible in the public repository.
 - Do not add private recruitment analysis, credentials, personal preparation notes, or internal orchestration artifacts.
 
-**IMPORTANT**: When making significant changes to the codebase (new patterns, infrastructure updates, routing changes, critical rules, tech stack additions), update this file to reflect those changes so future work remains consistent.
+**IMPORTANT**: When making significant changes to the codebase (new patterns, infrastructure updates, routing changes, critical rules, tech stack additions), update this file to reflect those changes so future work remains consistent. Keep them concise.
 
 ## Established conventions
 
@@ -73,7 +73,7 @@ These already hold in the codebase. Preserve them unless a ticket explicitly cha
 - **PostgREST refuses an unqualified UPDATE or DELETE** (`21000: UPDATE requires a WHERE clause`), so every mutation needs a filter even when RLS already scopes it to one row. Derive the filter value from the verified session, never from the request body.
 - **Admin checks in the UI are cosmetic.** `app_metadata.is_admin` may decide what to render; the `coasters` policies re-derive the same claim from the verified JWT and are the only thing that authorizes a write.
 - **Supabase caps password sign-ins at 30 per five minutes per IP.** Both test suites cache one signed-in client per identity for out-of-band fixtures; `test:api` runs `--no-file-parallelism --no-isolate` so that cache spans its files. Do not add per-test sign-ins.
-- **`proxy.ts` is session refresh and optimistic redirects only** — never an authorization layer.
+- `**proxy.ts` is session refresh and optimistic redirects only** — never an authorization layer.
 - **Node is pinned to 22** via `.nvmrc` and `engines`; run tooling under it.
 - **Redirect targets from user input** must be resolved against a fixed origin, rejecting backslash and traversal forms, not prefix-matched.
 
@@ -94,3 +94,4 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+

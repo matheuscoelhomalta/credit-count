@@ -21,7 +21,9 @@ The milestone excludes live RCDB integration, native applications, historic impo
 
 The application will use the Next.js App Router on Node.js 22 and deploy to Vercel. Supabase will provide email/password authentication, Postgres, the Data API, and all authoritative access control.
 
-`@supabase/ssr` will provide separate browser and server clients. A root `proxy.ts` will refresh authentication tokens and support optimistic redirects, but it will not authorize data access. Server Components will handle authenticated reads by default; small Client Components or server actions will handle interactive mutations where appropriate.
+`@supabase/ssr` provides the server client used by Server Components, server actions, and `proxy.ts`. A root `proxy.ts` refreshes authentication tokens and supports optimistic redirects, but it does not authorize data access. Server Components handle authenticated reads; Client Components handle interaction only and reach the database through server actions.
+
+As delivered, no Client Component constructs a Supabase browser client — every query and mutation runs server-side. The publishable key therefore never reaches the browser bundle at all. This is stricter than the design required and was kept because it costs nothing: nothing in the SOW needs a direct browser query. A future feature that does (realtime, for example) would reintroduce a browser client, which remains safe because the key is publishable and RLS is the boundary.
 
 The browser and server application runtime require only:
 
