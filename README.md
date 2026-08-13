@@ -6,7 +6,12 @@ This repository contains the delivery implementation for the Koin Limited AI Pro
 
 ## Status
 
-In progress. Authentication, ride logging, personal statistics, history management, the opt-in public leaderboard, and catalogue administration are implemented and verified against a live Supabase project. Deployment and the final design reconciliation follow.
+Deployed at **https://credit-count-one.vercel.app**. Authentication, ride
+logging, personal statistics, history management, the opt-in public
+leaderboard, and catalogue administration are implemented and verified against
+production. The final design reconciliation and review brief follow.
+
+The leaderboard is public — it is the one page a signed-out visitor can see.
 
 ## Stack
 
@@ -107,3 +112,26 @@ Supabase's own linter should also stay clean:
 ```bash
 supabase db advisors --linked --type security
 ```
+
+## Deployment
+
+The application is deployed on Vercel from this repository's `main` branch.
+
+- Node is pinned to 22 in `package.json` `engines` and in the Vercel project's
+  runtime setting, so production matches local.
+- Only `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` are
+  configured as environment variables. There is no service-role key anywhere in
+  the deployment.
+- Supabase `site_url` and the redirect allow-list point at the production origin
+  (`supabase/config.toml`, applied with `supabase config push`).
+
+The browser suite can be pointed at any deployment, which is how the production
+release is verified:
+
+```bash
+E2E_BASE_URL=https://credit-count-one.vercel.app npm run test:e2e
+```
+
+Because no Client Component constructs a Supabase browser client — every read
+and write happens in a Server Component or server action — the publishable key
+does not appear in the deployed browser bundle at all.
