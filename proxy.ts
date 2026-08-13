@@ -7,7 +7,7 @@ import { createServerClient } from '@supabase/ssr';
 // redirects away from is still independently protected by grants and RLS in the
 // database, so bypassing this file gains an attacker nothing.
 
-const PROTECTED_PREFIXES = ['/dashboard', '/history', '/admin', '/account'];
+const PROTECTED_PREFIXES = ['/dashboard', '/history', '/coasters', '/admin', '/account'];
 const AUTH_ROUTES = ['/sign-in', '/sign-up'];
 
 export default async function proxy(request: NextRequest) {

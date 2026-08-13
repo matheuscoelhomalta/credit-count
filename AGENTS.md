@@ -60,6 +60,20 @@ If they conflict, stop and reconcile them instead of silently choosing one. The 
 - Keep setup, migration, testing, and deployment instructions reproducible in the public repository.
 - Do not add private recruitment analysis, credentials, personal preparation notes, or internal orchestration artifacts.
 
+**IMPORTANT**: When making significant changes to the codebase (new patterns, infrastructure updates, routing changes, critical rules, tech stack additions), update this file to reflect those changes so future work remains consistent.
+
+## Established conventions
+
+These already hold in the codebase. Preserve them unless a ticket explicitly changes them.
+
+- **Ownership is a column grant, not only a policy.** `rides.user_id` defaults to `auth.uid()` and is withheld from the INSERT grant; `user_id` and `coaster_id` are withheld from UPDATE and frozen by a trigger. New write paths and new columns must keep ownership unforgeable at the privilege layer, not just in RLS.
+- **Revoke function EXECUTE by name.** Supabase default privileges grant EXECUTE to `anon` and `authenticated` on every new function in `public`; `revoke ... from public` does not remove them. Every new function needs explicit revokes, and SECURITY DEFINER functions must end up executable by no API role that does not need them.
+- **Coasters are never deleted.** No API role holds DELETE. Admin removal is `active = false`. Test fixtures must therefore be idempotent rather than uniquely named per run.
+- **Anonymous callers hold no base-table privileges.** Public data is exposed only through the hardened leaderboard RPC.
+- **`proxy.ts` is session refresh and optimistic redirects only** — never an authorization layer.
+- **Node is pinned to 22** via `.nvmrc` and `engines`; run tooling under it.
+- **Redirect targets from user input** must be resolved against a fixed origin, rejecting backslash and traversal forms, not prefix-matched.
+
 ## Engineering discipline
 
 - Prefer simple, durable solutions for current requirements over speculative abstractions or compatibility layers.

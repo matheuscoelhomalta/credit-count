@@ -6,13 +6,13 @@
 
 **Covers:** R-007, R-008, R-010, R-011, R-017, R-019, R-021
 
-**Status:** ready-for-agent
+**Status:** complete — verified 2026-08-13 (direct Data API suite, unit tests, browser flows at both viewports)
 
 **Timebox:** 65 minutes
 
-- [ ] Owners can edit only ride date/note and delete their rides; owner and coaster identity cannot be reassigned through UI or API.
-- [ ] New or repointed rides against nonexistent or retired coasters are rejected.
-- [ ] Historical rides against retired coasters remain visible, keep contributing to statistics, and allow owner edits to date/note.
-- [ ] Country, manufacturer, type, and most-ridden statistics update after create, edit, and delete operations.
-- [ ] Direct-API regression cases prove foreign reads/mutations, forged ownership, bulk mutation, and invalid coaster associations remain denied.
-- [ ] History and statistics remain usable on phone and desktop layouts.
+- [x] Owners can edit only ride date/note and delete their rides; owner and coaster identity cannot be reassigned through UI or API.
+- [x] New or repointed rides against nonexistent or retired coasters are rejected.
+- [x] Historical rides against retired coasters remain visible, keep contributing to statistics, and allow owner edits to date/note.
+- [x] Country, manufacturer, type, and most-ridden statistics update after create, edit, and delete operations.
+- [x] Direct-API regression cases prove foreign reads/mutations, forged ownership, bulk mutation, and invalid coaster associations remain denied.
+- [x] History and statistics remain usable on phone and desktop layouts.

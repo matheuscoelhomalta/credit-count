@@ -25,10 +25,14 @@ beforeAll(async () => {
     admin(),
   ]);
 
+  // Ordered descending so this file works from the opposite end of the
+  // catalogue to ride-mutations.test.ts, which temporarily retires the first
+  // coasters by name. Files also run sequentially (see the test:api script).
   const { data } = await owner.client
     .from('coasters')
     .select('id')
     .eq('active', true)
+    .order('name', { ascending: false })
     .limit(1)
     .maybeSingle();
   activeCoasterId = data?.id ?? null;

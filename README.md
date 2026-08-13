@@ -81,9 +81,13 @@ npm run dev
 npm run typecheck
 npm run lint
 npm run build
-npm run test:api    # direct Supabase Data API access-matrix suite
-npm run test:e2e    # Playwright flows, desktop and phone viewports
+npm test            # unit, then direct-API, then browser flows
 ```
+
+The individual suites are `test:unit`, `test:api`, and `test:e2e`. Run them
+through `npm test` rather than in parallel: the direct-API and browser suites
+share the same demo accounts, and the browser suite resets that account's rides
+between flows, so overlapping runs would destroy each other's fixtures.
 
 `test:api` deliberately authenticates with the publishable key alone, so it can
 only prove what a real Data API caller can reach. It is the primary security

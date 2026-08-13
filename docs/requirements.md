@@ -14,17 +14,17 @@
 
 ### Catalogue and ride logging
 
-- [ ] **R-004:** An authenticated enthusiast can search or browse an active catalogue seeded with roughly 30–50 real coasters spanning multiple countries, manufacturers, and types.
-- [ ] **R-005:** From the dashboard, an enthusiast can select an active coaster and log an individual ride with a required date and optional short note in no more than three interactions.
-- [ ] **R-006:** An enthusiast can log multiple rides against the same coaster, with every ride retained as its own history entry.
-- [ ] **R-007:** An enthusiast can edit the date or note and delete only their own rides, while ride owner and coaster identity cannot be reassigned by the user.
-- [ ] **R-008:** No user can create or repoint a ride against a nonexistent or soft-retired coaster through either the UI or direct API, while historical rides against retired coasters remain visible and their date/note remain editable by their owner.
+- [x] **R-004:** An authenticated enthusiast can search or browse an active catalogue seeded with roughly 30–50 real coasters spanning multiple countries, manufacturers, and types.
+- [x] **R-005:** From the dashboard, an enthusiast can select an active coaster and log an individual ride with a required date and optional short note in no more than three interactions.
+- [x] **R-006:** An enthusiast can log multiple rides against the same coaster, with every ride retained as its own history entry.
+- [x] **R-007:** An enthusiast can edit the date or note and delete only their own rides, while ride owner and coaster identity cannot be reassigned by the user.
+- [x] **R-008:** No user can create or repoint a ride against a nonexistent or soft-retired coaster through either the UI or direct API, while historical rides against retired coasters remain visible and their date/note remain editable by their owner.
 
 ### Personal statistics
 
-- [ ] **R-009:** The dashboard shows the signed-in user's credit count as distinct coasters ridden and total ride count as all ride entries, including repeat rides correctly.
-- [ ] **R-010:** The dashboard shows credits by country, manufacturer, and coaster type plus the user's most-ridden coaster, and reflects ride-history changes without a separate manual refresh action.
-- [ ] **R-011:** Each user's ride history, dates, notes, and derived personal statistics remain inaccessible to anonymous visitors, other enthusiasts, and administrators through both the UI and direct API.
+- [x] **R-009:** The dashboard shows the signed-in user's credit count as distinct coasters ridden and total ride count as all ride entries, including repeat rides correctly.
+- [x] **R-010:** The dashboard shows credits by country, manufacturer, and coaster type plus the user's most-ridden coaster, and reflects ride-history changes without a separate manual refresh action.
+- [x] **R-011:** Each user's ride history, dates, notes, and derived personal statistics remain inaccessible to anonymous visitors, other enthusiasts, and administrators through both the UI and direct API.
 
 ### Public leaderboard
 
