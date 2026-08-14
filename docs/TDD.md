@@ -142,7 +142,7 @@ deletes, forged ownership, bulk mutation, and ownership reassignment all fail;
 that enthusiasts cannot mutate the catalogue while a refreshed admin can; that
 admins cannot reach another user's rides or profile; that nonexistent and
 retired coasters reject new rides; and that opt-out and distinct-credit counting
-behave correctly. **12 unit tests** cover statistics and date handling.
+behave correctly. **13 unit tests** cover statistics and date handling.
 
 **18 browser tests** run at both viewports; two of them are the focused flows
 the SOW asks for. Isolation assertions seed a real row and a positive control
@@ -150,8 +150,11 @@ first, because "no rows returned" would otherwise pass vacuously against an
 empty table.
 
 The whole suite was re-run against the production deployment via `E2E_BASE_URL`
-before submission. `supabase db advisors --type security` reports no schema
-findings.
+before submission. `supabase db advisors --type security` reports no errors and
+four expected warnings: two are `public.leaderboard()` being callable by `anon`
+and `authenticated`, which is its purpose and why it is hardened as above; two
+are Auth defaults, leaked-password protection and MFA, left off for this
+demonstration.
 
 ## 6. Deployment and operations
 
@@ -183,10 +186,9 @@ repository and are transmitted separately.
 - **No browser Supabase client.** Stricter than the pre-build design, which
   anticipated one. Nothing in the SOW needs a direct browser query; a feature
   that did would reintroduce one safely, since the key is publishable.
-- **Race behavior.** A simultaneous ride insert and coaster retirement relies on
-  normal transaction behavior; no serialization was added because none is
-  needed. The insert either sees the coaster active and succeeds, or sees it
-  retired and is refused by the policy.
+- **Race behavior.** A simultaneous ride insert and coaster retirement needs no
+  serialization: the insert either sees the coaster active and succeeds, or sees
+  it retired and is refused by the policy.
 - **Free-tier behavior.** Data and traffic limits are far above this
   demonstration's scale. The operationally material limits are project pausing
   after inactivity (hence the pre-call rehearsal), email throttling (hence

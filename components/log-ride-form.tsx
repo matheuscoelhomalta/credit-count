@@ -1,9 +1,9 @@
 'use client';
 
-import { useMemo, useRef, useState, useTransition } from 'react';
+import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
 
 import { logRide } from '@/app/rides/actions';
-import { maxAcceptableRideDate } from '@/lib/dates';
+import { localToday, maxAcceptableRideDate } from '@/lib/dates';
 import type { CoasterSummary } from '@/lib/rides';
 
 // R-005 caps this at three interactions from the dashboard. The date is
@@ -22,6 +22,16 @@ export function LogRideForm({
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
+  const dateRef = useRef<HTMLInputElement>(null);
+
+  // `today` is rendered on the server, so it is the server's calendar day —
+  // UTC in production. West of UTC that is already tomorrow for several hours
+  // each evening, and the rider would silently log a ride dated tomorrow.
+  // The corrected value is written to the DOM after hydration rather than
+  // rendered, because rendering the browser's date would mismatch the server's.
+  useEffect(() => {
+    if (dateRef.current) dateRef.current.value = localToday();
+  }, []);
 
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -44,6 +54,8 @@ export function LogRideForm({
       setError(result.error);
       if (!result.error) {
         form.reset();
+        // reset() restores the server-rendered date, so re-apply the correction.
+        if (dateRef.current) dateRef.current.value = localToday();
         setSelected(null);
         setQuery('');
         setOpen(false);
@@ -132,15 +144,16 @@ export function LogRideForm({
             Date
           </label>
           <input
+            ref={dateRef}
             id="riddenOn"
             name="riddenOn"
             className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
             type="date"
             required
-            // `today` comes from the server, so it is the server's calendar
-            // day. Capping at it would lock out anyone east of UTC, who is
+            // Capping at `today` would lock out anyone east of UTC, who is
             // already on the next day. The cap is the same one-day slack the
-            // validator and the database CHECK allow.
+            // validator and the database CHECK allow. The value itself is
+            // corrected to the browser's date on mount, above.
             max={maxAcceptableRideDate()}
             defaultValue={today}
           />

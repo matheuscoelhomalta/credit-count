@@ -16,7 +16,10 @@ Roughly ten minutes, signed-out to admin, in one pass.
 2. **The real boundary.** Before signing in, show that this is not a UI trick.
    `npm run test:api` authenticates with the publishable key alone and proves
    the same denials at the Data API. Anonymous reads of `profiles`, `coasters`,
-   and `rides` return `42501` — a privilege error, not an empty result.
+   and `rides` return `42501` — a privilege error, not an empty result. (This
+   suite needs the three `TEST_*` identities in `.env.local`, which are separate
+   from the two demo accounts, so it is run from the development machine during
+   the walkthrough rather than by the reviewer.)
 3. **Sign in as the enthusiast.** The account arrives with history already:
    **11 rides but 9 credits**, with the breakdowns and most-ridden tile
    populated. The gap between those two numbers is the product's whole idea.

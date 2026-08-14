@@ -59,12 +59,18 @@ Fill `.env.local` with your Supabase project URL and **publishable** key
 database credential — Row Level Security is the authorization boundary, so the
 client is only ever trusted with what an anonymous caller may already see.
 
-Apply the database schema, grants, policies, and seed catalogue:
+Apply the database schema, grants, policies, and seed catalogue, then the Auth
+configuration:
 
 ```bash
 supabase link --project-ref <your-project-ref>
 supabase db push
+supabase config push   # site_url, redirect allow-list, confirmation settings
 ```
+
+Push the config before creating any accounts below: it is what disables email
+confirmation and sets the redirect allow-list, so accounts created beforehand
+would be unconfirmed and unable to sign in.
 
 Then create the test identities and grant the admin claim:
 

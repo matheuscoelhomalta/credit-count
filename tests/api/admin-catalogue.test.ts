@@ -133,6 +133,25 @@ describe('catalogue authority grants nothing else', () => {
     expect(data).toHaveLength(0);
   });
 
+  it('does not let an administrator rewrite a coaster’s identity or timestamps', async () => {
+    // The catalogue grant is column-scoped, like the one on rides. Reassigning
+    // `id` is the damaging case: rides reference it, so a repoint would move
+    // other people's history onto a different coaster.
+    for (const patch of [
+      { id: crypto.randomUUID() },
+      { created_at: '2000-01-01T00:00:00Z' },
+    ]) {
+      const { error } = await administrator.client
+        .from('coasters')
+        .update(patch)
+        .eq('id', coasterId)
+        .select('id');
+
+      // 42501 is the grant layer refusing the column outright, before RLS.
+      expect(error?.code).toBe('42501');
+    }
+  });
+
   it('does not let an administrator opt someone into the leaderboard', async () => {
     const { data, error } = await administrator.client
       .from('profiles')
