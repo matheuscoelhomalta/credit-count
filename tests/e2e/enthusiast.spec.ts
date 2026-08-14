@@ -11,6 +11,15 @@ test('the catalogue can be browsed and searched', async ({ page }) => {
   await page.getByRole('link', { name: 'Catalogue' }).click();
 
   await expect(page.getByRole('heading', { name: 'Coaster catalogue' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Catalogue' })).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    ),
+  ).toBe(true);
   // The full active catalogue is browsable without searching first.
   await expect(page.getByText(/\d+ active coasters/)).toBeVisible();
 
@@ -20,13 +29,26 @@ test('the catalogue can be browsed and searched', async ({ page }) => {
   await expect(page.getByText('Nemesis Reborn')).toBeHidden();
 });
 
-test('editing the coaster search after selecting still finds matches', async ({ page }) => {
+test('the coaster picker supports keyboard selection and explains incomplete input', async ({
+  page,
+}) => {
   await signIn(page, enthusiastEmail, enthusiastPassword);
 
-  const search = page.getByLabel('Coaster');
+  const search = page.getByRole('combobox', { name: 'Coaster' });
   await search.fill('Taron');
-  await page.getByRole('button', { name: /^Taron/ }).click();
+  await expect(search).toHaveAttribute('role', 'combobox');
+  await expect(search).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.getByText('Choose a coaster from the list.')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Log ride' })).toBeDisabled();
+
+  await search.press('ArrowDown');
+  const taron = page.getByRole('option', { name: /^Taron/ });
+  await expect(taron).toHaveAttribute('aria-selected', 'true');
+  await search.press('Enter');
+
+  await expect(search).toHaveAttribute('aria-expanded', 'false');
   await expect(page.getByRole('button', { name: 'Log ride' })).toBeEnabled();
+  await expect(search).toHaveCSS('outline-style', 'solid');
 
   // The field holds the plain search term, not a decorated "Name — Park" label.
   // That label was the bug: one backspace left "Taron — Phantasialan" in the
@@ -36,6 +58,20 @@ test('editing the coaster search after selecting still finds matches', async ({ 
 
   // Editing the term after selecting must degrade back into an ordinary search.
   await search.fill('Taro');
-  await expect(page.getByRole('button', { name: /^Taron/ })).toBeVisible();
+  await expect(page.getByRole('option', { name: /^Taron/ })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Log ride' })).toBeDisabled();
+
+  await search.press('Escape');
+  await expect(search).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('an exact coaster name can be selected with Enter', async ({ page }) => {
+  await signIn(page, enthusiastEmail, enthusiastPassword);
+
+  const search = page.getByRole('combobox', { name: 'Coaster' });
+  await search.fill('Nemesis Reborn');
+  await search.press('Enter');
+
+  await expect(page.getByText('Selected: Alton Towers, United Kingdom')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Log ride' })).toBeEnabled();
 });

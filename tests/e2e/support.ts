@@ -77,11 +77,11 @@ export async function signIn(page: Page, email: string, password: string) {
 
 /** Logs a ride from the dashboard: pick the coaster, then submit. */
 export async function logRide(page: Page, coasterName: string, note?: string) {
-  const search = page.getByLabel('Coaster');
+  const search = page.getByRole('combobox', { name: 'Coaster' });
   const submit = page.getByRole('button', { name: 'Log ride' });
 
   await search.fill(coasterName);
-  await page.getByRole('button', { name: new RegExp(`^${coasterName}`) }).click();
+  await page.getByRole('option', { name: new RegExp(`^${coasterName}`) }).click();
   if (note) {
     await page.getByLabel(/^Note/).fill(note);
   }
@@ -93,4 +93,5 @@ export async function logRide(page: Page, coasterName: string, note?: string) {
   // prevents the next fill() from being wiped by the in-flight reset.
   await expect(search).toHaveValue('');
   await expect(submit).toBeDisabled();
+  await expect(page.getByRole('status')).toHaveText(`${coasterName} logged.`);
 }

@@ -19,10 +19,12 @@ export function LogRideForm({
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<CoasterSummary | null>(null);
   const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
-  const formRef = useRef<HTMLFormElement>(null);
   const dateRef = useRef<HTMLInputElement>(null);
+  const optionRefs = useRef<Array<HTMLLIElement | null>>([]);
 
   // `today` is rendered on the server, so it is the server's calendar day —
   // UTC in production. West of UTC that is already tomorrow for several hours
@@ -33,15 +35,73 @@ export function LogRideForm({
     if (dateRef.current) dateRef.current.value = localToday();
   }, []);
 
-  const matches = useMemo(() => {
+  const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return coasters.slice(0, 8);
-    return coasters
-      .filter((c) =>
-        `${c.name} ${c.park} ${c.country} ${c.manufacturer}`.toLowerCase().includes(q),
-      )
-      .slice(0, 8);
+    if (!q) return coasters;
+    return coasters.filter((c) =>
+      `${c.name} ${c.park} ${c.country} ${c.manufacturer}`.toLowerCase().includes(q),
+    );
   }, [coasters, query]);
+  const matches = filtered.slice(0, 8);
+  const popupOpen = open && !selected && matches.length > 0;
+  const listboxId = 'coaster-options';
+  const guidanceId = 'coaster-guidance';
+
+  useEffect(() => {
+    if (popupOpen && activeIndex !== null) {
+      optionRefs.current[activeIndex]?.scrollIntoView({ block: 'nearest' });
+    }
+  }, [activeIndex, popupOpen]);
+
+  function chooseCoaster(coaster: CoasterSummary) {
+    setSelected(coaster);
+    setQuery(coaster.name);
+    setOpen(false);
+    setActiveIndex(null);
+    setError(null);
+    setStatus(null);
+  }
+
+  function handleCoasterKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Escape' && open) {
+      event.preventDefault();
+      setOpen(false);
+      setActiveIndex(null);
+      return;
+    }
+
+    if (selected || matches.length === 0) return;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setOpen(true);
+      setActiveIndex((current) => (current === null ? 0 : (current + 1) % matches.length));
+      return;
+    }
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setOpen(true);
+      setActiveIndex((current) =>
+        current === null ? matches.length - 1 : (current - 1 + matches.length) % matches.length,
+      );
+      return;
+    }
+
+    if (event.key === 'Enter' && popupOpen) {
+      const exactMatches = matches.filter(
+        (coaster) => coaster.name.toLowerCase() === query.trim().toLowerCase(),
+      );
+      let choice = activeIndex === null ? null : matches[activeIndex];
+      if (!choice && exactMatches.length === 1) choice = exactMatches[0];
+      if (!choice && matches.length === 1) choice = matches[0];
+
+      if (choice) {
+        event.preventDefault();
+        chooseCoaster(choice);
+      }
+    }
+  }
 
   // Invoked directly rather than via useActionState so the form reset happens
   // in the async callback instead of an effect reacting to the result.
@@ -49,6 +109,8 @@ export function LogRideForm({
     event.preventDefault();
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const loggedCoaster = selected;
+    setStatus(null);
     startTransition(async () => {
       const result = await logRide({ error: null }, formData);
       setError(result.error);
@@ -59,13 +121,14 @@ export function LogRideForm({
         setSelected(null);
         setQuery('');
         setOpen(false);
+        setActiveIndex(null);
+        setStatus(loggedCoaster ? `${loggedCoaster.name} logged.` : 'Ride logged.');
       }
     });
   }
 
   return (
     <form
-      ref={formRef}
       onSubmit={handleSubmit}
       className="rounded-lg border border-black/10 p-4 dark:border-white/15 sm:p-5"
     >
@@ -74,8 +137,8 @@ export function LogRideForm({
       <input type="hidden" name="coasterId" value={selected?.id ?? ''} />
 
       <div className="mt-4 grid gap-4 sm:grid-cols-[2fr_1fr]">
-        {/* Closing on blur needs to survive focus moving to an option button
-            inside this same container, so the handler checks the new target. */}
+        {/* Pointer selection keeps focus on the combobox. If another control
+            receives focus, close the popup without changing the typed value. */}
         <div
           className="relative"
           onBlur={(event) => {
@@ -89,7 +152,7 @@ export function LogRideForm({
           </label>
           <input
             id="coaster-search"
-            className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
+            className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base focus:border-black dark:border-white/20 dark:focus:border-white"
             type="text"
             autoComplete="off"
             placeholder="Search by name, park, country…"
@@ -97,40 +160,70 @@ export function LogRideForm({
             // "Name — Park" label here instead meant one backspace left an
             // em-dash in the query, which matches nothing and stranded the user.
             value={query}
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded={popupOpen}
+            aria-controls={listboxId}
+            aria-activedescendant={
+              popupOpen && activeIndex !== null
+                ? `${listboxId}-${matches[activeIndex].id}`
+                : undefined
+            }
+            aria-describedby={query.trim() && !selected ? guidanceId : undefined}
             onChange={(event) => {
               setSelected(null);
               setQuery(event.target.value);
               setOpen(true);
+              setActiveIndex(null);
+              setError(null);
+              setStatus(null);
             }}
             onFocus={() => setOpen(true)}
+            onKeyDown={handleCoasterKeyDown}
           />
-          {open && !selected && matches.length > 0 && (
-            <ul className="absolute z-10 mt-1 max-h-64 w-full overflow-auto rounded-md border border-black/15 bg-background shadow-lg dark:border-white/20">
-              {matches.map((coaster) => (
-                <li key={coaster.id}>
-                  <button
-                    type="button"
-                    className="block w-full px-3 py-2 text-left text-sm hover:bg-black/5 dark:hover:bg-white/10"
-                    onClick={() => {
-                      setSelected(coaster);
-                      // Keep the query in sync with the selection so editing it
-                      // degrades into an ordinary search rather than a dead end.
-                      setQuery(coaster.name);
-                      setOpen(false);
-                    }}
-                  >
-                    <span className="font-medium">{coaster.name}</span>
-                    <span className="opacity-70">
-                      {' '}
-                      — {coaster.park}, {coaster.country}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+          <ul
+            id={listboxId}
+            role="listbox"
+            aria-label="Matching coasters"
+            hidden={!popupOpen}
+            className="absolute z-10 mt-1 max-h-64 w-full overflow-auto rounded-md border border-black/15 bg-background shadow-lg dark:border-white/20"
+          >
+            {matches.map((coaster, index) => (
+              <li
+                ref={(element) => {
+                  optionRefs.current[index] = element;
+                }}
+                id={`${listboxId}-${coaster.id}`}
+                key={coaster.id}
+                role="option"
+                aria-selected={activeIndex === index}
+                className={`cursor-pointer px-3 py-2 text-left text-sm ${
+                  activeIndex === index
+                    ? 'bg-black/10 dark:bg-white/15'
+                    : 'hover:bg-black/5 dark:hover:bg-white/10'
+                }`}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => chooseCoaster(coaster)}
+              >
+                <span className="font-medium">{coaster.name}</span>
+                <span className="opacity-70">
+                  {' '}
+                  — {coaster.park}, {coaster.country}
+                </span>
+              </li>
+            ))}
+          </ul>
           {open && !selected && query.trim() && matches.length === 0 && (
-            <p className="mt-1.5 text-sm opacity-70">No active coaster matches that.</p>
+            <p id={guidanceId} className="mt-1.5 text-sm opacity-70">
+              No active coaster matches that.
+            </p>
+          )}
+          {query.trim() && !selected && matches.length > 0 && (
+            <p id={guidanceId} className="mt-1.5 text-sm opacity-70">
+              Choose a coaster from the list.
+              {filtered.length > matches.length &&
+                ` Showing the first ${matches.length} of ${filtered.length} matches; keep typing to narrow them.`}
+            </p>
           )}
           {selected && (
             <p className="mt-1.5 text-sm opacity-70">
@@ -147,7 +240,7 @@ export function LogRideForm({
             ref={dateRef}
             id="riddenOn"
             name="riddenOn"
-            className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
+            className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base focus:border-black dark:border-white/20 dark:focus:border-white"
             type="date"
             required
             // Capping at `today` would lock out anyone east of UTC, who is
@@ -167,7 +260,7 @@ export function LogRideForm({
         <input
           id="note"
           name="note"
-          className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
+          className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base focus:border-black dark:border-white/20 dark:focus:border-white"
           type="text"
           maxLength={280}
           placeholder="Front row at sunset"
@@ -177,6 +270,11 @@ export function LogRideForm({
       {error && (
         <p role="alert" className="mt-3 text-sm text-red-600 dark:text-red-400">
           {error}
+        </p>
+      )}
+      {status && (
+        <p role="status" className="mt-3 text-sm font-medium">
+          {status}
         </p>
       )}
 

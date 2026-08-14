@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { createClient } from '@/lib/supabase/server';
+import { AppHeader } from '@/components/app-header';
 
 export const metadata: Metadata = { title: 'Leaderboard · Credit Count' };
 
@@ -22,21 +23,30 @@ export default async function LeaderboardPage() {
 
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-5 py-10">
-      <header className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Leaderboard</h1>
-          <p className="mt-1.5 text-sm opacity-70">
-            Enthusiasts who chose to share their credit count. Ride history stays
-            private.
-          </p>
-        </div>
-        <Link
-          className="rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background"
-          href={user ? '/dashboard' : '/sign-up'}
-        >
-          {user ? 'Go to dashboard' : 'Create account'}
-        </Link>
-      </header>
+      {user ? (
+        <AppHeader
+          active="leaderboard"
+          isAdmin={user.app_metadata?.is_admin === true}
+          title="Leaderboard"
+          subtitle="Enthusiasts who chose to share their credit count. Ride history stays private."
+        />
+      ) : (
+        <header className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Leaderboard</h1>
+            <p className="mt-1.5 text-sm opacity-70">
+              Enthusiasts who chose to share their credit count. Ride history stays
+              private.
+            </p>
+          </div>
+          <Link
+            className="rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background"
+            href="/sign-up"
+          >
+            Create account
+          </Link>
+        </header>
+      )}
 
       {error && (
         <p
@@ -72,11 +82,13 @@ export default async function LeaderboardPage() {
         </ol>
       )}
 
-      <p className="mt-8 text-sm opacity-60">
-        <Link className="underline underline-offset-4" href="/">
-          Back to home
-        </Link>
-      </p>
+      {!user && (
+        <p className="mt-8 text-sm opacity-60">
+          <Link className="underline underline-offset-4" href="/">
+            Back to home
+          </Link>
+        </p>
+      )}
     </main>
   );
 }

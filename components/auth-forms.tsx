@@ -8,7 +8,7 @@ import { signIn, signUp, type AuthState } from '@/app/auth/actions';
 const initialState: AuthState = { error: null };
 
 const fieldClass =
-  'w-full rounded-md border border-black/15 dark:border-white/20 bg-transparent px-3 py-2 text-base outline-none focus:border-black dark:focus:border-white';
+  'w-full rounded-md border border-black/15 dark:border-white/20 bg-transparent px-3 py-2 text-base focus:border-black dark:focus:border-white';
 const labelClass = 'block text-sm font-medium mb-1.5';
 const submitClass =
   'w-full rounded-md bg-foreground text-background px-4 py-2.5 font-medium disabled:opacity-60';

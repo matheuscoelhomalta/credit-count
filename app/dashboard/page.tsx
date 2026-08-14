@@ -3,13 +3,13 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
-import { signOut } from '@/app/auth/actions';
 import { computeStats, type CoasterSummary, type RideWithCoaster } from '@/lib/rides';
 import { localToday } from '@/lib/dates';
 import { LogRideForm } from '@/components/log-ride-form';
 import { StatsPanel } from '@/components/stats';
 import { LeaderboardToggle } from '@/components/leaderboard-toggle';
 import { RideList } from '@/components/ride-list';
+import { AppHeader } from '@/components/app-header';
 
 export const metadata: Metadata = { title: 'Dashboard · Credit Count' };
 
@@ -72,56 +72,16 @@ export default async function DashboardPage() {
 
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-5 py-8 sm:py-10">
-      <header className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {profile?.display_name ?? 'Dashboard'}
-          </h1>
-          <p className="mt-1.5 text-sm opacity-70">
-            {profile?.leaderboard_opt_in
-              ? 'Listed on the public leaderboard.'
-              : 'Private — not listed on the public leaderboard.'}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          {/* Navigation convenience only — /admin and the catalogue policies
-              both re-derive the role, so hiding this grants nothing. */}
-          {user.app_metadata?.is_admin === true && (
-            <Link
-              className="rounded-md border border-black/15 px-3 py-2 text-sm dark:border-white/20"
-              href="/admin"
-            >
-              Admin
-            </Link>
-          )}
-          <Link
-            className="rounded-md border border-black/15 px-3 py-2 text-sm dark:border-white/20"
-            href="/leaderboard"
-          >
-            Leaderboard
-          </Link>
-          <Link
-            className="rounded-md border border-black/15 px-3 py-2 text-sm dark:border-white/20"
-            href="/coasters"
-          >
-            Catalogue
-          </Link>
-          <Link
-            className="rounded-md border border-black/15 px-3 py-2 text-sm dark:border-white/20"
-            href="/history"
-          >
-            History
-          </Link>
-          <form action={signOut}>
-            <button
-              className="rounded-md border border-black/15 px-3 py-2 text-sm dark:border-white/20"
-              type="submit"
-            >
-              Sign out
-            </button>
-          </form>
-        </div>
-      </header>
+      <AppHeader
+        active="dashboard"
+        isAdmin={user.app_metadata?.is_admin === true}
+        title={profile?.display_name ?? 'Dashboard'}
+        subtitle={
+          profile?.leaderboard_opt_in
+            ? 'Listed on the public leaderboard.'
+            : 'Private — not listed on the public leaderboard.'
+        }
+      />
 
       {problems.length > 0 && (
         <div

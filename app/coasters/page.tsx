@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
 import type { CoasterSummary } from '@/lib/rides';
+import { AppHeader } from '@/components/app-header';
 
 export const metadata: Metadata = { title: 'Catalogue · Credit Count' };
 
@@ -48,26 +48,17 @@ export default async function CoastersPage({
 
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-5 py-8 sm:py-10">
-      <header className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Coaster catalogue</h1>
-          <p className="mt-1.5 text-sm opacity-70">
-            {coasters.length} active {coasters.length === 1 ? 'coaster' : 'coasters'}
-            {query ? ' matching your search' : ''}.
-          </p>
-        </div>
-        <Link
-          className="rounded-md border border-black/15 px-3 py-2 text-sm dark:border-white/20"
-          href="/dashboard"
-        >
-          Dashboard
-        </Link>
-      </header>
+      <AppHeader
+        active="coasters"
+        isAdmin={user.app_metadata?.is_admin === true}
+        title="Coaster catalogue"
+        subtitle={`${coasters.length} active ${coasters.length === 1 ? 'coaster' : 'coasters'}${query ? ' matching your search' : ''}.`}
+      />
 
       {/* A plain GET form keeps browsing usable without client-side JS. */}
       <form className="mt-6 flex gap-2" action="/coasters" method="get">
         <input
-          className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
+          className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base focus:border-black dark:border-white/20 dark:focus:border-white"
           type="search"
           name="q"
           defaultValue={query}

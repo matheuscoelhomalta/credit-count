@@ -76,6 +76,7 @@ These already hold in the codebase. Preserve them unless a ticket explicitly cha
 - `**proxy.ts` is session refresh and optimistic redirects only** — never an authorization layer.
 - **Node is pinned to 22** via `.nvmrc` and `engines`; run tooling under it.
 - **Redirect targets from user input** must be resolved against a fixed origin, rejecting backslash and traversal forms, not prefix-matched.
+- **Authenticated page headers use `components/app-header.tsx`.** Keep the navigation responsive, pass the current destination for `aria-current`, and treat the admin link as cosmetic; catalogue policies remain the authorization boundary.
 
 ## Engineering discipline
 
@@ -94,4 +95,3 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
-

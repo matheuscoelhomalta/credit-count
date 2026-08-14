@@ -24,3 +24,14 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+@media (forced-colors: active) {
+  :where(a, button, input, select, textarea):focus-visible {
+    outline-color: Highlight;
+  }
+}

@@ -6,7 +6,7 @@ import { createCoaster, setCoasterActive, updateCoaster } from '@/app/admin/acti
 import type { CoasterSummary } from '@/lib/rides';
 
 const field =
-  'w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base outline-none focus:border-black dark:border-white/20 dark:focus:border-white';
+  'w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base focus:border-black dark:border-white/20 dark:focus:border-white';
 const smallButton =
   'rounded-md border border-black/15 px-2.5 py-1.5 text-sm dark:border-white/20';
 

@@ -46,6 +46,10 @@ test.describe('visitor and enthusiast', () => {
     await signIn(page, enthusiastEmail, enthusiastPassword);
     await expect(page.getByRole('heading', { name: displayName })).toBeVisible();
     await expect(page.getByText(/not listed on the public leaderboard/i)).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Dashboard' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
 
     // 3. Logging is fast: search, pick, submit. The date defaults to today and
     // the note is optional, so three coasters cost three interactions each.
@@ -67,6 +71,10 @@ test.describe('visitor and enthusiast', () => {
     // 6. History management: correct one entry, remove another, and watch the
     // statistics follow without a manual refresh.
     await page.getByRole('link', { name: 'History' }).click();
+    await expect(page.getByRole('link', { name: 'History' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
     const mamba = page.locator('li', { has: page.getByText('Black Mamba') });
     await mamba.getByRole('button', { name: /^Edit ride/ }).click();
     await mamba.getByLabel('Ride note').fill('back row this time');
@@ -126,6 +134,15 @@ test.describe('administrator', () => {
     await signIn(page, adminEmail, adminPassword);
     await page.getByRole('link', { name: 'Admin' }).click();
     await expect(page.getByRole('heading', { name: 'Catalogue admin' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Admin' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      ),
+    ).toBe(true);
 
     // Created on the first run; on later runs the duplicate is reported and the
     // existing row is reused.
