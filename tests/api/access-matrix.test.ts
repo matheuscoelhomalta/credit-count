@@ -190,8 +190,10 @@ describe('ride ownership cannot be forged', () => {
       const foreign = await other.client.from('rides').select('id');
       const asAdmin = await administrator.client.from('rides').select('id');
 
-      expect(foreign.data ?? []).not.toContainEqual({ id: seededRideId });
-      expect(asAdmin.data ?? []).not.toContainEqual({ id: seededRideId });
+      expect(foreign.error).toBeNull();
+      expect(foreign.data).not.toContainEqual({ id: seededRideId });
+      expect(asAdmin.error).toBeNull();
+      expect(asAdmin.data).not.toContainEqual({ id: seededRideId });
     });
 
     it('denies a foreign delete and an administrator delete', async () => {

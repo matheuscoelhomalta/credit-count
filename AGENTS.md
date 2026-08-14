@@ -74,6 +74,7 @@ These already hold in the codebase. Preserve them unless a ticket explicitly cha
 - **Admin checks in the UI are cosmetic.** `app_metadata.is_admin` may decide what to render; the `coasters` policies re-derive the same claim from the verified JWT and are the only thing that authorizes a write.
 - **Supabase caps password sign-ins at 30 per five minutes per IP.** Both test suites cache one signed-in client per identity for out-of-band fixtures; `test:api` runs `--no-file-parallelism --no-isolate` so that cache spans its files. Do not add per-test sign-ins.
 - `**proxy.ts` is session refresh and optimistic redirects only** — never an authorization layer.
+- **Supabase SSR refresh headers travel with auth cookies.** Apply the response headers supplied to `setAll(cookies, headers)` alongside the cookies and preserve both when `proxy.ts` returns a redirect.
 - **Node is pinned to 22** via `.nvmrc` and `engines`; run tooling under it.
 - **Redirect targets from user input** must be resolved against a fixed origin, rejecting backslash and traversal forms, not prefix-matched.
 - **Authenticated page headers use `components/app-header.tsx`.** Keep the navigation responsive, pass the current destination for `aria-current`, and treat the admin link as cosmetic; catalogue policies remain the authorization boundary.

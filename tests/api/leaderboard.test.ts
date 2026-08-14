@@ -142,7 +142,8 @@ describe('leaderboard contents', () => {
       .from('rides')
       .select('id')
       .in('id', seededRideIds);
-    expect(foreign.data ?? []).toHaveLength(0);
+    expect(foreign.error).toBeNull();
+    expect(foreign.data).toHaveLength(0);
   });
 
   it('is equally available to a signed-in caller', async () => {

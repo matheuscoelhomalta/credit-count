@@ -77,6 +77,5 @@ export const admin = () => signInAs('TEST_ADMIN_EMAIL', 'TEST_ADMIN_PASSWORD');
  * isolation testable at all.
  */
 export function deniedRead(result: { data: unknown; error: unknown }): boolean {
-  if (result.error) return true;
-  return Array.isArray(result.data) && result.data.length === 0;
+  return result.error === null && Array.isArray(result.data) && result.data.length === 0;
 }
