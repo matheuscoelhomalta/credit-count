@@ -31,13 +31,13 @@ export default async function AdminPage({
 
   if (!isAdmin) {
     return (
-      <main className="mx-auto w-full max-w-2xl flex-1 px-5 py-10">
+      <main className="mx-auto w-full max-w-4xl flex-1 px-5 py-8 sm:py-10">
         <AppHeader
           active="admin"
           title="Catalogue admin"
           subtitle="Catalogue administration is restricted to designated administrators."
         />
-        <p className="cc-surface mt-6 p-4 text-sm text-[var(--ink-soft)]">
+        <p className="cc-surface mt-6 max-w-2xl p-4 text-sm text-[var(--ink-soft)]">
           This area is for catalogue administrators. If your role was granted
           recently, sign out and back in so your session picks it up.
         </p>

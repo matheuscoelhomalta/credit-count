@@ -63,9 +63,12 @@ export function AppHeader({
 
           <ThemeToggle onPlate />
 
-          <form className="sm:border-l sm:border-white/25 sm:pl-2" action={signOut}>
+          {/* Set apart by treatment rather than by a divider rule: the row wraps
+              on narrow containers as well as narrow viewports, and a rule left
+              hanging at the start of a wrapped line separates nothing. */}
+          <form action={signOut}>
             <button
-              className="rounded-[3px] px-2 py-1.5 text-[13px] text-[var(--on-plate)]/75 underline-offset-4 transition-colors hover:text-[var(--on-plate)] hover:underline sm:text-sm"
+              className="rounded-[3px] border border-white/40 px-2.5 py-1 text-[13px] text-[var(--on-plate)]/80 transition-colors hover:border-white/70 hover:bg-white/10 hover:text-[var(--on-plate)] sm:text-sm"
               type="submit"
             >
               Sign out

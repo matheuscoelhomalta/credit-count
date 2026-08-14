@@ -27,6 +27,22 @@ test('the catalogue can be browsed and searched', async ({ page }) => {
   await page.getByRole('button', { name: 'Search' }).click();
   await expect(page.getByText('Taron')).toBeVisible();
   await expect(page.getByText('Nemesis Reborn')).toBeHidden();
+
+  // The header is shared chrome, so it must not change shape from page to page.
+  // /leaderboard once used a narrower column, which wrapped the bar onto two
+  // rows and left the sign-out divider hanging at the start of the second.
+  const bar = () =>
+    page.evaluate(() => {
+      const r = document.querySelector('header > div')!.getBoundingClientRect();
+      return { w: Math.round(r.width), h: Math.round(r.height) };
+    });
+
+  await page.goto('/dashboard');
+  const reference = await bar();
+  for (const route of ['/history', '/coasters', '/leaderboard']) {
+    await page.goto(route);
+    expect(await bar(), `header geometry on ${route}`).toEqual(reference);
+  }
 });
 
 test('the coaster picker supports keyboard selection and explains incomplete input', async ({

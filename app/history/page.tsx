@@ -28,7 +28,7 @@ export default async function HistoryPage() {
   const rides = (data ?? []) as unknown as RideWithCoaster[];
 
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-5 py-8 sm:py-10">
+    <main className="mx-auto w-full max-w-4xl flex-1 px-5 py-8 sm:py-10">
       <AppHeader
         active="history"
         isAdmin={user.app_metadata?.is_admin === true}
@@ -42,7 +42,7 @@ export default async function HistoryPage() {
         </p>
       )}
 
-      <div className="mt-6">
+      <div className="mt-6 max-w-3xl">
         <RideList rides={rides} editable />
       </div>
     </main>

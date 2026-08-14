@@ -23,7 +23,7 @@ export default async function LeaderboardPage() {
   } = await supabase.auth.getUser();
 
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-5 py-10">
+    <main className="mx-auto w-full max-w-4xl flex-1 px-5 py-8 sm:py-10">
       {user ? (
         <AppHeader
           active="leaderboard"
@@ -63,7 +63,7 @@ export default async function LeaderboardPage() {
           Nobody has joined the leaderboard yet. Be the first to share a count.
         </p>
       ) : (
-        <ol className="mt-8 flex flex-col gap-2">
+        <ol className="mt-8 flex max-w-2xl flex-col gap-2">
           {rows.map((row, index) => (
             <li
               key={`${index}-${row.display_name}`}
