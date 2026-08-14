@@ -79,6 +79,18 @@ supabase db query --linked \
 Administrator status lives only in `app_metadata`, which users cannot edit
 through the auth API. It takes effect on the account's next token refresh.
 
+For a demo, create the reviewer accounts too. These are separate from the
+`TEST_*` accounts on purpose: the browser suite deletes its enthusiast's rides
+before every test, so demo data kept there would vanish after any test run.
+
+```bash
+node scripts/create-reviewer-accounts.mjs   # seeds ride history, opts into the leaderboard
+```
+
+The script is idempotent and reuses any credentials already in `.env.local`, so
+re-running it will not invalidate credentials you have already shared. Grant the
+admin claim to the reviewer admin with the same SQL as above.
+
 ```bash
 npm run dev
 ```

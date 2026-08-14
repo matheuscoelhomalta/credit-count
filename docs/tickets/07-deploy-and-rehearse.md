@@ -13,5 +13,5 @@
 - [x] The production URL supports the signed-out leaderboard, authentication, ride logging, statistics, opt-in changes, and admin catalogue management.
 - [x] Production auth URLs, environment values, runtime version, and session refresh behavior are verified after the final deployment.
 - [x] The direct-API security suite and both focused browser flows pass against final deployed behavior.
-- [ ] One verified enthusiast and one verified admin account work; credentials remain outside source control and are prepared for separate secure transmission.
+- [x] One verified enthusiast and one verified admin account work; credentials remain outside source control and are prepared for separate secure transmission.
 - [x] A rehearsal confirms the Supabase project is active and the complete reviewer path works.
