@@ -6,10 +6,10 @@ This repository contains the delivery implementation for the Koin Limited AI Pro
 
 ## Status
 
-Deployed at **https://credit-count-one.vercel.app**. Authentication, ride
-logging, personal statistics, history management, the opt-in public
-leaderboard, and catalogue administration are implemented and verified against
-production. The final design reconciliation and review brief follow.
+Complete and deployed at **https://credit-count-one.vercel.app**.
+Authentication, ride logging, personal statistics, history management, the
+opt-in public leaderboard, and catalogue administration are implemented and
+verified against production.
 
 The leaderboard is public — it is the one page a signed-out visitor can see.
 
@@ -24,7 +24,7 @@ The leaderboard is public — it is the one page a signed-out visitor can see.
 ## Design
 
 - [Technical Design Document](docs/TDD.md) — reconciled with the deployed
-  system. Section 8 lists every assumption, trade-off, and SOW deviation.
+  system. Section 7 lists every assumption, trade-off, and SOW deviation.
 - [Review brief](docs/review-brief.md) — demonstration order, the security model
   in brief, and where the design would go next.
 

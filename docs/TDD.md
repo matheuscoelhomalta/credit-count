@@ -6,27 +6,24 @@
 **Stack:** Next.js 16.3, TypeScript, Node.js 22, Supabase, Vercel
 **Production:** https://credit-count-one.vercel.app
 
-This document describes the system as deployed. Section 8 lists every
+This document describes the system as deployed. Section 7 lists every
 assumption, trade-off, and deviation from the SOW or from the pre-build design.
 
 ## 1. Purpose and scope
 
 Credit Count is a responsive web application for rollercoaster enthusiasts to
-record individual rides, see their unique coaster credit count and related
-statistics, and optionally appear on a public leaderboard. The v1 was sized to
-fit the assessment's eight-hour cap while satisfying the SOW's security and
-acceptance criteria.
+record individual rides, see their credit count and related statistics, and
+optionally appear on a public leaderboard. The v1 was sized to fit the
+assessment's eight-hour cap while satisfying the SOW's acceptance criteria.
 
-Three roles. A **visitor** sees the public leaderboard and can sign up, with no
-access to catalogue, profile, ride, or coaster-level history data. An
-**enthusiast** browses active coasters, logs repeat rides, manages only their
-own history, sees private statistics, and controls leaderboard participation. An
-**admin** maintains the shared catalogue and receives no access to other users'
-rides or statistics.
+The three SOW roles are implemented as specified: a **visitor** sees only the
+public leaderboard and sign-up; an **enthusiast** logs and manages their own
+rides and controls leaderboard participation; an **admin** maintains the shared
+catalogue and gains no access to anyone's rides.
 
 Excluded, per the SOW: live RCDB integration, native applications, historic
 imports, commercial features, custom password-reset behavior, localisation. The
-catalogue is seeded with 40 real coasters across multiple countries,
+catalogue is seeded with 40 real coasters across several countries,
 manufacturers, and types.
 
 ## 2. Architecture
@@ -36,26 +33,22 @@ Supabase provides email/password authentication, Postgres, the Data API, and all
 authoritative access control.
 
 `@supabase/ssr` provides the server client used by Server Components, server
-actions, and `proxy.ts`. `proxy.ts` (Next.js 16's rename of `middleware.ts`)
-refreshes authentication tokens and performs optimistic redirects. It is **not**
-an authorization layer: every route it redirects away from is independently
-protected by grants and RLS, so bypassing it gains an attacker nothing.
+actions, and `proxy.ts` (Next.js 16's rename of `middleware.ts`). `proxy.ts`
+refreshes tokens and performs optimistic redirects; it is **not** an
+authorization layer, because every route it guards is independently protected by
+grants and RLS. Bypassing it gains an attacker nothing.
 
-Server Components perform all reads. Client Components handle interaction only
-and mutate through server actions. As delivered, no Client Component constructs
-a Supabase browser client, so the publishable key never reaches the browser
-bundle — verified by scanning the deployed chunks (see section 8).
+Server Components perform all reads and Client Components mutate through server
+actions. As delivered no Client Component constructs a Supabase browser client,
+so the publishable key never reaches the browser bundle — verified by scanning
+the deployed chunks (see section 7).
 
-The application runtime uses only:
-
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
-
-No service-role key or database credential exists in the application, the
-repository, or the Vercel project. Schema, constraints, functions, grants,
-policies, and seed data all live in six ordered migrations under
-`supabase/migrations/`, so the security model is reproducible from a clean
-project with `supabase db push`.
+The runtime uses only `NEXT_PUBLIC_SUPABASE_URL` and
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. No service-role key or database
+credential exists in the application, the repository, or the Vercel project.
+Schema, constraints, functions, grants, policies, and seed data live in six
+ordered migrations under `supabase/migrations/`, so the security model is
+reproducible from a clean project with `supabase db push`.
 
 ## 3. Data design
 
@@ -65,16 +58,16 @@ project with `supabase db push`.
 | `coasters` | `id`, `name`, `park`, `country`, `manufacturer`, `type`, `active` | Shared catalogue, unique on `(name, park)`. `active = false` is admin removal without destroying history. |
 | `rides` | `id`, `user_id`, `coaster_id`, `ridden_on`, `note`, timestamps | One row per ride. Repeat rides are retained; `user_id` and `coaster_id` are immutable to the enthusiast. |
 
-A credit is `count(distinct coaster_id)` over a user's rides. Total rides counts
-every row. Country, manufacturer, and type breakdowns group **distinct ridden
-coasters**, not rides, so repeat rides cannot inflate them. The most-ridden
-coaster counts all ride rows per coaster.
+A credit is `count(distinct coaster_id)` over a user's rides; total rides counts
+every row. The country, manufacturer, and type breakdowns group **distinct
+ridden coasters**, not rides, so repeat rides cannot inflate them. The
+most-ridden coaster counts all ride rows per coaster.
 
 `rides.coaster_id` references `coasters` with `ON DELETE RESTRICT`, and no API
 role holds `DELETE` on `coasters` at all. Admin "remove" is therefore soft
 retirement: retired coasters disappear from browsing and reject new rides, while
-existing rides stay visible to their owner, keep contributing to statistics, and
-remain editable in date and note.
+existing rides stay visible, keep contributing to statistics, and remain
+editable in date and note.
 
 ## 4. Security and privacy model
 
@@ -86,17 +79,15 @@ are revoked explicitly first, so every privilege in the system is deliberate.
 ### Private rides
 
 Ride policies compare `auth.uid()` with `rides.user_id` for every operation:
+`SELECT` and `DELETE` use an ownership predicate, `INSERT` adds an
+active-coaster existence check, and `UPDATE` uses ownership in both `USING` and
+`WITH CHECK`.
 
-- `SELECT` and `DELETE` use an ownership predicate.
-- `INSERT` uses an ownership `WITH CHECK` plus an active-coaster existence check.
-- `UPDATE` uses ownership in both `USING` and `WITH CHECK`.
-
-Ownership is unforgeable below the policy layer as well. `rides.user_id`
-defaults to `auth.uid()` and is **withheld from the INSERT column grant**, so a
-crafted payload naming another user is refused by PostgREST before RLS is
-consulted. `user_id` and `coaster_id` are withheld from the UPDATE grant and
-additionally frozen by a `BEFORE UPDATE` trigger. Only date and note are
-user-editable.
+Ownership is unforgeable below the policy layer too. `rides.user_id` defaults to
+`auth.uid()` and is **withheld from the INSERT column grant**, so a payload
+naming another user is refused by PostgREST before RLS is consulted. `user_id`
+and `coaster_id` are withheld from the UPDATE grant and frozen by a
+`BEFORE UPDATE` trigger; only date and note are user-editable.
 
 There is deliberately no admin policy on `rides`. Admins have exactly the
 owner-only access an enthusiast has.
@@ -127,11 +118,10 @@ That narrow `SECURITY DEFINER` exception:
 - uses fixed SQL with no dynamic input and no arguments to widen;
 - declares scalar return columns rather than a base-table row type, so a new
   column on `profiles` or `rides` cannot silently become public;
-- revokes EXECUTE **by name** from `public`, `anon`, `authenticated`, and
-  `service_role` before granting it to `anon` and `authenticated` — a plain
-  `revoke ... from public` does not remove Supabase's explicit default grants;
-- excludes user ids, ride ids, dates, notes, coaster identities, and
-  coaster-level history.
+- revokes EXECUTE **by name** from every role before granting it to `anon` and
+  `authenticated`, because a plain `revoke ... from public` does not remove
+  Supabase's explicit default grants;
+- excludes user ids, ride ids, dates, notes, and coaster identities entirely.
 
 Opting out updates the profile row and removes that user from the next response.
 Participants are `LEFT JOIN`ed to their rides so an opted-in enthusiast with no
@@ -139,58 +129,42 @@ rides appears at zero rather than vanishing from a board they just joined.
 Opted-out profiles are excluded entirely — never shown as a zero — so absence
 never distinguishes "no rides" from "not participating".
 
-## 5. User flows
-
-A visitor views the leaderboard or signs up; the new profile is private by
-default. From the dashboard a type-ahead selects an active coaster and records a
-ride in three interactions — search, pick, submit — with the date pre-filled to
-today and the note optional. Credits, total rides, breakdowns, and the
-most-ridden coaster update without a separate refresh. The enthusiast edits or
-deletes their own history and may opt into or out of public ranking. An admin
-uses `/admin` to add, edit, or retire coasters, gaining no ride access.
-
-The interface is English-only and responsive; every flow is exercised at desktop
-and Pixel 7 viewports. `docs/review-brief.md` gives the demonstration order.
-
-## 6. Verification
+## 5. Verification
 
 The highest-risk behavior is authorization bypass through the Data API, so
 testing prioritizes security evidence over component coverage, and every suite
 runs against the real hosted project.
 
 **45 direct-API tests** authenticate with the publishable key alone as
-anonymous, enthusiast, second enthusiast, and admin, proving that: anonymous
-access is limited to the two leaderboard fields; cross-user reads, edits,
+anonymous, enthusiast, second enthusiast, and admin. They prove that anonymous
+access is limited to the two leaderboard fields; that cross-user reads, edits,
 deletes, forged ownership, bulk mutation, and ownership reassignment all fail;
-enthusiasts cannot mutate the catalogue while a refreshed admin can; admins
-cannot reach another user's rides or profile; nonexistent and retired coasters
-reject new rides; opt-out removes leaderboard visibility; and repeat rides do
-not inflate credits. **12 unit tests** cover statistics and date handling.
+that enthusiasts cannot mutate the catalogue while a refreshed admin can; that
+admins cannot reach another user's rides or profile; that nonexistent and
+retired coasters reject new rides; and that opt-out and distinct-credit counting
+behave correctly. **12 unit tests** cover statistics and date handling.
 
-**18 browser tests** run at both viewports. Two are the flows the SOW asks for,
-kept together in `tests/e2e/journeys.spec.ts`; the rest are narrower
-regressions. Isolation assertions seed a real row and a positive control first,
-because "no rows returned" would otherwise pass vacuously against an empty
-table.
+**18 browser tests** run at both viewports; two of them are the focused flows
+the SOW asks for. Isolation assertions seed a real row and a positive control
+first, because "no rows returned" would otherwise pass vacuously against an
+empty table.
 
 The whole suite was re-run against the production deployment via `E2E_BASE_URL`
 before submission. `supabase db advisors --type security` reports no schema
 findings.
 
-## 7. Deployment and operations
+## 6. Deployment and operations
 
 Vercel hosts the Next.js deployment; Supabase is the system of record. Node is
-pinned to 22 in `.nvmrc`, `engines`, and the Vercel project runtime. Only the
-two `NEXT_PUBLIC_*` values are configured in Vercel. Supabase `site_url` and the
-redirect allow-list point at the production origin and are version-controlled in
-`supabase/config.toml`.
+pinned to 22 in `.nvmrc`, `engines`, and the Vercel project runtime, and only
+the two `NEXT_PUBLIC_*` values are configured in Vercel. Supabase `site_url` and
+the redirect allow-list point at the production origin and are version-
+controlled in `supabase/config.toml`. Email confirmation is disabled so the
+demonstration does not depend on Supabase's rate-limited mailer. Two reviewer
+accounts are verified against production; their credentials live outside the
+repository and are transmitted separately.
 
-Two reviewer accounts are created and verified against production; their
-credentials live outside the repository and are transmitted separately. Email
-confirmation is disabled on the project so the demonstration does not depend on
-Supabase's rate-limited mailer.
-
-## 8. Assumptions, trade-offs, and deviations
+## 7. Assumptions, trade-offs, and deviations
 
 - **Soft retirement.** The SOW says admins can remove coasters but does not
   define referenced-history behavior. Hard deletion of a referenced coaster is
@@ -204,19 +178,15 @@ Supabase's rate-limited mailer.
   UTC to log a ride taken today — at 09:00 in New Zealand it is still yesterday
   in UTC. One day is the smallest correct fix, and no timezone is more than
   ~14 hours ahead.
-- **Zero-credit participants appear.** A design decision made during
-  implementation, described in section 4: opting in always has a visible effect.
+- **Zero-credit participants appear**, as described in section 4, so that
+  opting in always has a visible effect.
 - **No browser Supabase client.** Stricter than the pre-build design, which
-  anticipated both a browser and a server client. Nothing in the SOW needs a
-  direct browser query. A future feature that does (realtime, say) would
-  reintroduce one safely: the key is publishable and RLS is the boundary.
+  anticipated one. Nothing in the SOW needs a direct browser query; a feature
+  that did would reintroduce one safely, since the key is publishable.
 - **Race behavior.** A simultaneous ride insert and coaster retirement relies on
-  normal transaction behavior. No practical integrity failure appeared in
-  testing, so no additional serialization was added: the insert either sees the
-  coaster active and succeeds, or sees it retired and is refused by the policy.
-- **PostgREST requires a qualified UPDATE.** An unfiltered UPDATE is rejected
-  (`21000`), so mutations carry a filter even where RLS already scopes them to
-  one row. Filter values come from the verified session, never the request body.
+  normal transaction behavior; no serialization was added because none is
+  needed. The insert either sees the coaster active and succeeds, or sees it
+  retired and is refused by the policy.
 - **Free-tier behavior.** Data and traffic limits are far above this
   demonstration's scale. The operationally material limits are project pausing
   after inactivity (hence the pre-call rehearsal), email throttling (hence

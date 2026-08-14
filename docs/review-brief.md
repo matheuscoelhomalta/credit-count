@@ -84,7 +84,7 @@ The budget went to security evidence first, required behavior second, styling
 last. Concretely: no admin bypass anywhere, soft retirement instead of deletion,
 and no feature outside the SOW. The deliberate trade-offs — admin claims
 refreshing with the JWT rather than immediately, duplicate display names
-allowed, a one-day timezone slack on ride dates — are each listed in section 8
+allowed, a one-day timezone slack on ride dates — are each listed in section 7
 of the TDD with their reasoning.
 
 ## What I would do next
