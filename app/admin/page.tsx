@@ -94,7 +94,7 @@ export default async function AdminPage({
       </form>
 
       {error && (
-        <p role="alert" className="cc-alert mt-6 rounded-r">
+        <p role="alert" className="cc-notice cc-alert mt-6">
           Could not load the catalogue: {error.message}
         </p>
       )}

@@ -1,7 +1,7 @@
 # Credit Count — Technical Design Document
 
 **Status:** Reconciled with the deployed system
-**Date:** 13 August 2026
+**Date:** 14 August 2026
 **Milestone:** Submission-ready v1
 **Stack:** Next.js 16.3, TypeScript, Node.js 22, Supabase, Vercel
 **Production:** https://credit-count-one.vercel.app
@@ -46,7 +46,7 @@ the deployed chunks (see section 7).
 The runtime uses only `NEXT_PUBLIC_SUPABASE_URL` and
 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. No service-role key or database
 credential exists in the application, the repository, or the Vercel project.
-Schema, constraints, functions, grants, policies, and seed data live in six
+Schema, constraints, functions, grants, policies, and seed data live in seven
 ordered migrations under `supabase/migrations/`, so the security model is
 reproducible from a clean project with `supabase db push`.
 
@@ -135,7 +135,7 @@ The highest-risk behavior is authorization bypass through the Data API, so
 testing prioritizes security evidence over component coverage, and every suite
 runs against the real hosted project.
 
-**45 direct-API tests** authenticate with the publishable key alone as
+**46 direct-API tests** authenticate with the publishable key alone as
 anonymous, enthusiast, second enthusiast, and admin. They prove that anonymous
 access is limited to the two leaderboard fields; that cross-user reads, edits,
 deletes, forged ownership, bulk mutation, and ownership reassignment all fail;
@@ -144,7 +144,7 @@ admins cannot reach another user's rides or profile; that nonexistent and
 retired coasters reject new rides; and that opt-out and distinct-credit counting
 behave correctly. **13 unit tests** cover statistics and date handling.
 
-**18 browser tests** run at both viewports; two of them are the focused flows
+**26 browser tests** run at both viewports; two of them are the focused flows
 the SOW asks for. Isolation assertions seed a real row and a positive control
 first, because "no rows returned" would otherwise pass vacuously against an
 empty table.

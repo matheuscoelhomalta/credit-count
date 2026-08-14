@@ -37,7 +37,7 @@ export default async function HistoryPage() {
       />
 
       {error && (
-        <p role="alert" className="cc-alert mt-6 rounded-r">
+        <p role="alert" className="cc-notice cc-alert mt-6">
           Could not load your history: {error.message}
         </p>
       )}

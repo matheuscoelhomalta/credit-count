@@ -186,7 +186,7 @@ export function LogRideForm({
             role="listbox"
             aria-label="Matching coasters"
             hidden={!popupOpen}
-            className="absolute z-10 mt-1 max-h-64 w-full overflow-auto rounded-[3px] border-2 border-[var(--ink)] bg-[var(--surface)] shadow-[4px_4px_0_var(--plate-edge)]"
+            className="absolute z-10 mt-1 max-h-64 w-full overflow-auto rounded-[3px] border border-[var(--ink)] bg-[var(--surface)] shadow-[0_10px_24px_-12px_rgba(0,0,0,0.45)]"
           >
             {matches.map((coaster, index) => (
               <li
@@ -268,14 +268,14 @@ export function LogRideForm({
       </div>
 
       {error && (
-        <p role="alert" className="cc-alert mt-4 rounded-r">
+        <p role="alert" className="cc-notice cc-alert mt-4">
           {error}
         </p>
       )}
       {status && (
         <p
           role="status"
-          className="mt-4 block w-fit rounded-[3px] border border-[var(--plate-edge)] bg-[var(--signal)] px-3 py-1.5 text-sm font-bold text-[#2e2e2e]"
+          className="cc-notice cc-confirm mt-4 block"
         >
           {status}
         </p>

@@ -52,7 +52,7 @@ export function RideList({
                 {formatDate(ride.ridden_on)}
               </p>
               {ride.note && (
-                <p className="mt-2 border-l-2 border-[var(--signal)] pl-2.5 text-sm">
+                <p className="mt-2 border-l-2 border-[var(--rule-strong)] pl-2.5 text-sm">
                   {ride.note}
                 </p>
               )}

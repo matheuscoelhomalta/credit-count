@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { createClient } from '@/lib/supabase/server';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 type LeaderboardRow = { display_name: string; credit_count: number };
 
@@ -21,18 +22,21 @@ export default async function HomePage() {
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-10 px-5 pt-10 pb-16 sm:pt-14">
       <div className="flex items-center justify-between gap-4">
         <span className="cc-display text-base">CREDIT COUNT</span>
-        <Link
-          className="text-sm font-semibold underline decoration-[var(--signal)] decoration-2 underline-offset-4"
-          href="/leaderboard"
-        >
-          Leaderboard
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            className="text-sm font-semibold underline underline-offset-4"
+            href="/leaderboard"
+          >
+            Leaderboard
+          </Link>
+          <ThemeToggle />
+        </div>
       </div>
 
       {/* The hero is the count itself, not a claim about it. */}
-      <div className="relative overflow-hidden rounded bg-[var(--plate)] pb-6 text-[var(--on-plate)] shadow-[5px_5px_0_var(--plate-edge)]">
+      <div className="overflow-hidden rounded bg-[var(--plate)] pb-8 text-[var(--on-plate)]">
         <div className="px-6 pt-7 sm:px-8 sm:pt-9">
-          <h1 className="cc-display max-w-[16ch] text-[2.25rem] sm:text-[3.25rem]">
+          <h1 className="cc-display max-w-[18ch] text-[1.875rem] sm:text-[2.5rem]">
             Every coaster you ride, counted once.
           </h1>
           <p className="mt-4 max-w-prose text-base text-[var(--on-plate)]/75">
@@ -42,10 +46,7 @@ export default async function HomePage() {
 
           {sharedCredits > 0 && (
             <p className="mt-8 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span
-                className="cc-display text-[3.5rem] tabular-nums text-[var(--signal)] sm:text-[4.5rem]"
-                style={{ fontStretch: '125%' }}
-              >
+              <span className="cc-display text-[2.5rem] tabular-nums text-[var(--signal)] sm:text-[3rem]">
                 {sharedCredits}
               </span>
               <span className="cc-eyebrow text-[var(--on-plate)]/65">
@@ -54,7 +55,7 @@ export default async function HomePage() {
             </p>
           )}
         </div>
-        <div aria-hidden className="cc-chevrons absolute inset-x-0 bottom-0 h-2" />
+
       </div>
 
       <div className="flex flex-wrap items-center gap-3">

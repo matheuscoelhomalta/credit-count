@@ -49,7 +49,7 @@ export function NewCoasterForm() {
       </div>
 
       {error && (
-        <p role="alert" className="cc-alert mt-4 rounded-r">
+        <p role="alert" className="cc-notice cc-alert mt-4">
           {error}
         </p>
       )}
@@ -163,7 +163,7 @@ export function CoasterAdminRow({ coaster }: { coaster: CoasterSummary }) {
       )}
 
       {error && (
-        <p role="alert" className="cc-alert mt-2 rounded-r">
+        <p role="alert" className="cc-notice cc-alert mt-2">
           {error}
         </p>
       )}

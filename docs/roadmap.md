@@ -1,14 +1,14 @@
 # Roadmap: Credit Count
 
-**Updated:** 2026-08-12
-**Status:** Approved
+**Updated:** 2026-08-14
+**Status:** Final delivery verification in progress
 **Milestone outcome:** A reviewer can access a stable deployed app and submission package, verify every acceptance criterion—including adversarial access controls—and confidently see that the TDD matches what was shipped.
 
 ## Phases
 
-- [ ] **Phase 1: Secure accounts and data boundary** — The deployed data model, authentication integration, and access matrix resist direct API misuse before feature breadth is added.
-- [ ] **Phase 2: Complete enthusiast loop** — An enthusiast can log repeat rides, manage private history, and see accurate credits and statistics on desktop or phone.
-- [ ] **Phase 3: Privacy-safe community and catalogue administration** — Anonymous ranking and admin catalogue management work without widening access to private data.
+- [x] **Phase 1: Secure accounts and data boundary** — The deployed data model, authentication integration, and access matrix resist direct API misuse before feature breadth is added.
+- [x] **Phase 2: Complete enthusiast loop** — An enthusiast can log repeat rides, manage private history, and see accurate credits and statistics on desktop or phone.
+- [x] **Phase 3: Privacy-safe community and catalogue administration** — Anonymous ranking and admin catalogue management work without widening access to private data.
 - [ ] **Phase 4: Reviewer-ready delivery** — The public repository, production deployment, tests, TDD, credentials, and review-call brief form a coherent submission.
 
 ## Phase Details

@@ -87,7 +87,7 @@ export function RideRowActions({ ride }: { ride: RideWithCoaster }) {
           </div>
         </div>
         {error && (
-          <p role="alert" className="cc-alert mt-2 rounded-r">
+          <p role="alert" className="cc-notice cc-alert mt-2">
             {error}
           </p>
         )}
@@ -98,7 +98,7 @@ export function RideRowActions({ ride }: { ride: RideWithCoaster }) {
   return (
     <div className="flex shrink-0 flex-wrap items-start justify-end gap-2">
       {error && (
-        <p role="alert" className="cc-alert w-full rounded-r text-right">
+        <p role="alert" className="cc-notice cc-alert w-full rounded-r text-right">
           {error}
         </p>
       )}

@@ -14,7 +14,7 @@ const submitClass = 'cc-btn w-full';
 function ErrorNote({ message }: { message: string | null }) {
   if (!message) return null;
   return (
-    <p role="alert" className="cc-alert rounded-r">
+    <p role="alert" className="cc-notice cc-alert">
       {message}
     </p>
   );

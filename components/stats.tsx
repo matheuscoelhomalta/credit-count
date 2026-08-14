@@ -44,14 +44,11 @@ export function StatsPanel({ stats }: { stats: RideStats }) {
   return (
     <section className="flex flex-col gap-4">
       {/* The one loud object on the page. Everything else stays a hairline. */}
-      <div className="relative overflow-hidden rounded bg-[var(--plate)] pb-5 text-[var(--on-plate)] shadow-[4px_4px_0_var(--plate-edge)]">
+      <div className="relative overflow-hidden rounded bg-[var(--plate)] pb-5 text-[var(--on-plate)]">
         <div className="flex flex-col gap-3 px-5 pt-5 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
           <div>
             <p className="cc-eyebrow text-[var(--on-plate)]/65">Credits</p>
-            <p
-              className="cc-display mt-1 text-[4.5rem] tabular-nums text-[var(--signal)] sm:text-[5.5rem]"
-              style={{ fontStretch: '125%' }}
-            >
+            <p className="cc-display mt-1.5 text-[3.25rem] tabular-nums text-[var(--signal)] sm:text-[4rem]">
               <CreditCounter value={stats.credits} />
             </p>
           </div>
@@ -59,7 +56,7 @@ export function StatsPanel({ stats }: { stats: RideStats }) {
             Distinct coasters ridden. Repeat rides are counted separately.
           </p>
         </div>
-        <div aria-hidden className="cc-chevrons absolute inset-x-0 bottom-0 h-2" />
+        <div aria-hidden className="cc-chevrons absolute inset-x-0 bottom-0 h-1.5" />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

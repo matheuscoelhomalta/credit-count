@@ -40,7 +40,7 @@ export function LeaderboardToggle({ optedIn }: { optedIn: boolean }) {
           : 'Only your display name and credit count would ever be shared.'}
       </p>
       {error && (
-        <p role="alert" className="cc-alert rounded-r">
+        <p role="alert" className="cc-notice cc-alert">
           {error}
         </p>
       )}

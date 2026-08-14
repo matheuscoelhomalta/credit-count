@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import { createClient } from '@/lib/supabase/server';
 import { AppHeader } from '@/components/app-header';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export const metadata: Metadata = { title: 'Leaderboard · Credit Count' };
 
@@ -36,20 +37,23 @@ export default async function LeaderboardPage() {
             <Link className="cc-display text-base text-[var(--ink)]" href="/">
               CREDIT COUNT
             </Link>
-            <h1 className="cc-display mt-6 text-[2rem] sm:text-[2.5rem]">Leaderboard</h1>
+            <h1 className="cc-display mt-6 text-[1.75rem] sm:text-[2.125rem]">Leaderboard</h1>
             <p className="mt-2 max-w-prose text-sm text-[var(--ink-soft)]">
               Enthusiasts who chose to share their credit count. Ride history stays
               private.
             </p>
           </div>
-          <Link className="cc-btn" href="/sign-up">
-            Create account
-          </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Link className="cc-btn" href="/sign-up">
+              Create account
+            </Link>
+          </div>
         </header>
       )}
 
       {error && (
-        <p role="alert" className="cc-alert mt-6 rounded-r">
+        <p role="alert" className="cc-notice cc-alert mt-6">
           The leaderboard could not be loaded.
         </p>
       )}
@@ -70,7 +74,7 @@ export default async function LeaderboardPage() {
               <span
                 className={`cc-data flex h-7 w-7 shrink-0 items-center justify-center rounded-[3px] text-sm ${
                   index === 0
-                    ? 'border border-[var(--ink)] bg-[var(--signal)] font-bold text-[#2e2e2e]'
+                    ? 'bg-[color-mix(in_srgb,var(--signal)_28%,transparent)] font-bold text-[var(--ink)]'
                     : 'text-[var(--ink-soft)]'
                 }`}
               >
@@ -90,7 +94,7 @@ export default async function LeaderboardPage() {
       {!user && (
         <p className="mt-8 text-sm">
           <Link
-            className="font-semibold underline decoration-[var(--signal)] decoration-2 underline-offset-4"
+            className="font-semibold underline underline-offset-4"
             href="/"
           >
             Back to home

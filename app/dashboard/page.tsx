@@ -84,7 +84,7 @@ export default async function DashboardPage() {
       />
 
       {problems.length > 0 && (
-        <div role="alert" className="cc-alert mt-6 rounded-r">
+        <div role="alert" className="cc-notice cc-alert mt-6">
           {problems.map((problem) => (
             <p key={problem}>{problem}</p>
           ))}
@@ -100,7 +100,7 @@ export default async function DashboardPage() {
             <h2 className="cc-section-title text-lg">Recent rides</h2>
             {rides.length > 5 && (
               <Link
-                className="text-sm font-semibold underline decoration-[var(--signal)] decoration-2 underline-offset-4"
+                className="text-sm font-semibold underline underline-offset-4"
                 href="/history"
               >
                 View all {rides.length}

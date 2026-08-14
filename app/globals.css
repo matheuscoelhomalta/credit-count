@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
-/* Station signage: an ink ground for chrome, paper for reading, and one
-   saturated yellow reserved for signals. Yellow is 1.5:1 on paper, so it is
-   only ever a field or type on ink — never text on the page background. */
+/* Station signage, kept quiet: an ink ground for chrome, paper for reading,
+   and one saturated yellow reserved for signals. Yellow is 1.5:1 on paper, so
+   it is only ever a field or type on ink — never text on the page background. */
 :root {
+  color-scheme: light;
+
   --ground: #fffcff;
   --surface: #fffcff;
   --ink: #2e2e2e;
   --ink-soft: #6b6a6b;
   --rule: #e6e3e6;
-  --rule-strong: #cfcbcf;
+  --rule-strong: #8f8d8f;
   --signal: #fdcb04;
   --on-signal: #2e2e2e;
   --alert: #b3261e;
@@ -26,19 +28,37 @@
   --foreground: var(--ink);
 }
 
+/* Three theme states: an explicit choice stamps `data-theme` on the root, and
+   the default setting stamps nothing, leaving `prefers-color-scheme` to decide.
+   The dark values are declared twice for that reason — keep them in sync. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
     --ground: #1b1b1b;
     --surface: #242424;
     --ink: #f4f1f4;
     --ink-soft: #a3a1a3;
     --rule: #383838;
-    --rule-strong: #4a4a4a;
+    --rule-strong: #737173;
     --alert: #ff8a80;
     --plate: #111111;
     --on-plate: #f4f1f4;
     --plate-edge: #000000;
   }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground: #1b1b1b;
+  --surface: #242424;
+  --ink: #f4f1f4;
+  --ink-soft: #a3a1a3;
+  --rule: #383838;
+  --rule-strong: #737173;
+  --alert: #ff8a80;
+  --plate: #111111;
+  --on-plate: #f4f1f4;
+  --plate-edge: #000000;
 }
 
 @theme inline {
@@ -65,11 +85,11 @@ body {
 }
 
 /* Focus is a signal, so it uses the signal colour, backed by an ink ring so it
-   survives on the yellow plates and the ink bar alike. */
+   survives on the yellow controls and the ink plates alike. */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 3px solid var(--signal);
+  outline: 2px solid var(--signal);
   outline-offset: 2px;
-  box-shadow: 0 0 0 5px var(--ink);
+  box-shadow: 0 0 0 4px var(--ink);
 }
 
 @media (forced-colors: active) {
@@ -79,20 +99,50 @@ body {
   }
 }
 
+/* Theme-dependent labels, swapped by CSS rather than from React state: the
+   server cannot know the reader's scheme, and rendering the wrong label for a
+   frame is worse than letting the stylesheet decide. Mirrors the three states
+   above, so a stored choice always beats the system preference. */
+.cc-when-light {
+  display: inline-flex;
+}
+
+.cc-when-dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .cc-when-dark {
+    display: inline-flex;
+  }
+
+  :root:not([data-theme="light"]) .cc-when-light {
+    display: none;
+  }
+}
+
+:root[data-theme="dark"] .cc-when-dark {
+  display: inline-flex;
+}
+
+:root[data-theme="dark"] .cc-when-light {
+  display: none;
+}
+
 @layer components {
   /* Width and weight carry the signage voice. Uppercasing the interface would
      rewrite accessible names, so the display face never transforms text. */
   .cc-display {
-    font-weight: 800;
-    font-stretch: 112%;
-    letter-spacing: -0.02em;
-    line-height: 1.02;
+    font-weight: 700;
+    font-stretch: 104%;
+    letter-spacing: -0.015em;
+    line-height: 1.06;
   }
 
   .cc-eyebrow {
     font-weight: 600;
-    font-stretch: 80%;
-    letter-spacing: 0.16em;
+    font-stretch: 84%;
+    letter-spacing: 0.12em;
     font-size: 0.6875rem;
     line-height: 1.2;
     color: var(--ink-soft);
@@ -108,8 +158,8 @@ body {
   .cc-chevrons {
     background-image: repeating-linear-gradient(
       -45deg,
-      var(--signal) 0 8px,
-      transparent 8px 16px
+      var(--signal) 0 7px,
+      transparent 7px 14px
     );
   }
 
@@ -142,8 +192,8 @@ body {
     border-color: var(--ink);
   }
 
-  /* The primary action is the only yellow field outside the plate and the
-     active tab, which is what makes yellow read as "go" throughout. */
+  /* The primary action is the only yellow control on the page, which is what
+     makes yellow read as "go" throughout. */
   .cc-btn {
     display: inline-flex;
     align-items: center;
@@ -153,33 +203,25 @@ body {
     color: var(--on-signal);
     border: 1px solid var(--plate-edge);
     border-radius: 3px;
-    padding: 0.6rem 1.1rem;
-    font-weight: 700;
-    font-stretch: 96%;
-    letter-spacing: 0.01em;
-    box-shadow: 3px 3px 0 var(--plate-edge);
-    transition:
-      transform 100ms ease,
-      box-shadow 100ms ease;
+    padding: 0.55rem 1rem;
+    font-weight: 600;
+    transition: background-color 120ms ease;
   }
 
   .cc-btn:hover:not(:disabled) {
-    transform: translate(1px, 1px);
-    box-shadow: 2px 2px 0 var(--plate-edge);
+    background: color-mix(in srgb, var(--signal) 88%, var(--plate-edge));
   }
 
   .cc-btn:active:not(:disabled) {
-    transform: translate(3px, 3px);
-    box-shadow: 0 0 0 var(--plate-edge);
+    background: color-mix(in srgb, var(--signal) 78%, var(--plate-edge));
   }
 
   /* Still a button, not a field: a filled slab reads as an action that is
      currently unavailable, where an outlined box reads as somewhere to type. */
   .cc-btn:disabled {
     background: color-mix(in srgb, var(--ink) 10%, transparent);
-    color: var(--ink-soft);
-    border-color: transparent;
-    box-shadow: none;
+    color: color-mix(in srgb, var(--ink) 75%, transparent);
+    border-color: var(--rule-strong);
     cursor: not-allowed;
   }
 
@@ -211,7 +253,7 @@ body {
 
   .cc-btn-danger {
     color: var(--alert);
-    border-color: color-mix(in srgb, var(--alert) 45%, transparent);
+    border-color: color-mix(in srgb, var(--alert) 70%, transparent);
   }
 
   .cc-btn-danger:hover:not(:disabled) {
@@ -219,18 +261,33 @@ body {
     background: color-mix(in srgb, var(--alert) 8%, transparent);
   }
 
-  .cc-alert {
-    border-left: 3px solid var(--alert);
-    background: color-mix(in srgb, var(--alert) 7%, transparent);
-    color: var(--alert);
+  /* One shape for both outcomes, so a result always appears in the same place
+     and reads the same way; only the colour says which it was. */
+  .cc-notice {
+    border-left: 3px solid var(--rule-strong);
+    background: color-mix(in srgb, var(--ink) 5%, transparent);
+    border-radius: 0 3px 3px 0;
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
   }
 
+  .cc-alert {
+    border-left-color: var(--alert);
+    background: color-mix(in srgb, var(--alert) 7%, transparent);
+    color: var(--alert);
+  }
+
+  .cc-confirm {
+    border-left-color: var(--signal);
+    background: color-mix(in srgb, var(--signal) 14%, transparent);
+    color: var(--ink);
+    font-weight: 600;
+  }
+
   .cc-section-title {
     font-weight: 700;
-    font-stretch: 104%;
-    letter-spacing: -0.015em;
+    font-stretch: 102%;
+    letter-spacing: -0.01em;
   }
 }
 
@@ -239,10 +296,5 @@ body {
   .cc-btn-quiet,
   .cc-field {
     transition: none;
-  }
-
-  .cc-btn:hover:not(:disabled),
-  .cc-btn:active:not(:disabled) {
-    transform: none;
   }
 }

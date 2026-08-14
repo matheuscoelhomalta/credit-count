@@ -6,7 +6,7 @@
 
 **Covers:** R-019, R-022, R-023, R-024
 
-**Status:** ready-for-agent
+**Status:** complete — verified 2026-08-13 against production
 
 **Timebox:** 45 minutes
 
