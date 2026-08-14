@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState, useTransition } from 'react';
 
 import { logRide } from '@/app/rides/actions';
+import { maxAcceptableRideDate } from '@/lib/dates';
 import type { CoasterSummary } from '@/lib/rides';
 
 // R-005 caps this at three interactions from the dashboard. The date is
@@ -136,7 +137,11 @@ export function LogRideForm({
             className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base outline-none focus:border-black dark:border-white/20 dark:focus:border-white"
             type="date"
             required
-            max={today}
+            // `today` comes from the server, so it is the server's calendar
+            // day. Capping at it would lock out anyone east of UTC, who is
+            // already on the next day. The cap is the same one-day slack the
+            // validator and the database CHECK allow.
+            max={maxAcceptableRideDate()}
             defaultValue={today}
           />
         </div>

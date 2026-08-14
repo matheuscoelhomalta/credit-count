@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 
 import { deleteRide, updateRide } from '@/app/rides/actions';
-import { localToday } from '@/lib/dates';
+import { maxAcceptableRideDate } from '@/lib/dates';
 import type { RideWithCoaster } from '@/lib/rides';
 
 const smallButton =
@@ -40,7 +40,11 @@ export function RideRowActions({ ride }: { ride: RideWithCoaster }) {
     });
   }
 
-  const today = localToday();
+  // Must match what the validator and the database CHECK accept, not the
+  // browser's own "today". A ride logged at 21:00 in Brazil carries the UTC
+  // date, which is already tomorrow locally; capping at the local date made
+  // that row fail HTML validation and silently refuse to save.
+  const latest = maxAcceptableRideDate();
 
   if (editing) {
     return (
@@ -55,7 +59,7 @@ export function RideRowActions({ ride }: { ride: RideWithCoaster }) {
             type="date"
             name="riddenOn"
             required
-            max={today}
+            max={latest}
             defaultValue={ride.ridden_on}
           />
           <input

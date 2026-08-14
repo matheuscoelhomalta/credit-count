@@ -36,4 +36,16 @@ describe('ride date validation', () => {
   it('formats local today as YYYY-MM-DD', () => {
     expect(localToday()).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
+
+  it('never caps a date input below what the validator accepts', () => {
+    // The date inputs use maxAcceptableRideDate() as their `max`. If that were
+    // ever earlier than a date isValidRideDate() accepts, the browser would
+    // block a save the server would have allowed — which is exactly what
+    // happened when the edit form capped at the browser's local today: a ride
+    // logged at 21:00 in Brazil carries the UTC date, already tomorrow locally,
+    // so the row silently refused to save.
+    const max = maxAcceptableRideDate();
+    expect(isValidRideDate(max)).toBe(true);
+    expect(localToday() <= max).toBe(true);
+  });
 });
