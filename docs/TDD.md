@@ -2,6 +2,7 @@
 
 **Status:** Reconciled with the deployed system
 **Date:** 14 August 2026
+**Prepared by:** Matheus Coêlho
 **Milestone:** Submission-ready v1
 **Stack:** Next.js 16.3, TypeScript, Node.js 22, Supabase, Vercel
 **Production:** https://credit-count-one.vercel.app
@@ -20,6 +21,10 @@ The three SOW roles are implemented as specified: a **visitor** sees only the
 public leaderboard and sign-up; an **enthusiast** logs and manages their own
 rides and controls leaderboard participation; an **admin** maintains the shared
 catalogue and gains no access to anyone's rides.
+
+From the dashboard, an enthusiast can find an active coaster and log a ride
+with its date and optional note in no more than three interactions. Counts and
+statistics then update without a manual refresh.
 
 Excluded, per the SOW: live RCDB integration, native applications, historic
 imports, commercial features, custom password-reset behavior, localisation. The
@@ -132,8 +137,8 @@ never distinguishes "no rides" from "not participating".
 ## 5. Verification
 
 The highest-risk behavior is authorization bypass through the Data API, so
-testing prioritizes security evidence over component coverage, and every suite
-runs against the real hosted project.
+testing prioritizes security evidence over component coverage. Direct-API and
+browser tests exercise hosted behavior; pure unit tests run locally.
 
 **46 direct-API tests** authenticate with the publishable key alone as
 anonymous, enthusiast, second enthusiast, and admin. They prove that anonymous
@@ -142,19 +147,20 @@ deletes, forged ownership, bulk mutation, and ownership reassignment all fail;
 that enthusiasts cannot mutate the catalogue while a refreshed admin can; that
 admins cannot reach another user's rides or profile; that nonexistent and
 retired coasters reject new rides; and that opt-out and distinct-credit counting
-behave correctly. **13 unit tests** cover statistics and date handling.
+behave correctly.
 
-**26 browser tests** run at both viewports; two of them are the focused flows
-the SOW asks for. Isolation assertions seed a real row and a positive control
-first, because "no rows returned" would otherwise pass vacuously against an
-empty table.
+**13 unit tests** cover statistics and date handling locally. **13 browser
+scenarios** execute at both desktop and phone viewports, producing **26
+Playwright executions**; two scenarios are the focused flows the SOW asks for.
+Isolation assertions seed a real row and a positive control first, because "no
+rows returned" would otherwise pass vacuously against an empty table.
 
-The whole suite was re-run against the production deployment via `E2E_BASE_URL`
-before submission. `supabase db advisors --type security` reports no errors and
-four expected warnings: two are `public.leaderboard()` being callable by `anon`
-and `authenticated`, which is its purpose and why it is hardened as above; two
-are Auth defaults, leaked-password protection and MFA, left off for this
-demonstration.
+All 26 Playwright executions were re-run against the production deployment via
+`E2E_BASE_URL` before submission. `supabase db advisors --type security`
+reports no errors and four expected warnings: two are `public.leaderboard()`
+being callable by `anon` and `authenticated`, which is its purpose and why it
+is hardened as above; two are Auth defaults, leaked-password protection and
+MFA, left off for this demonstration.
 
 ## 6. Deployment and operations
 
