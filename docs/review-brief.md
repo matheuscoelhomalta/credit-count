@@ -17,21 +17,29 @@ Roughly ten minutes, signed-out to admin, in one pass.
    `npm run test:api` authenticates with the publishable key alone and proves
    the same denials at the Data API. Anonymous reads of `profiles`, `coasters`,
    and `rides` return `42501` — a privilege error, not an empty result.
-3. **Sign in as the enthusiast.** Land on the dashboard, private by default.
-4. **Log rides.** Type-ahead, pick, submit — three interactions. Log three
-   different coasters, then ride one of them a second time. Credits go to 3
-   while total rides goes to 4, and the breakdowns stay at 3, because a credit
-   is a distinct coaster.
+3. **Sign in as the enthusiast.** The account arrives with history already:
+   **11 rides but 9 credits**, with the breakdowns and most-ridden tile
+   populated. The gap between those two numbers is the product's whole idea.
+4. **Log a ride.** Type-ahead, pick, submit — three interactions. Credits go to
+   10 and rides to 12. Now log a *repeat* of a coaster already ridden: rides go
+   to 13 and credits stay at 10, and the breakdowns do not move either, because
+   a credit is a distinct coaster.
 5. **Manage history.** Edit a note, delete a ride, watch the statistics follow.
    Note what the edit form does *not* offer: the coaster cannot be changed.
-6. **Opt in.** Join the leaderboard, then load `/leaderboard` in a private
-   window. Name and count appear; no ride, date, or note does. Opt out and
-   reload — the entry is gone.
+6. **Leave and rejoin the leaderboard.** The account is already listed. Open
+   `/leaderboard` in a private window — name and count appear, no ride, date,
+   note, or coaster does. Opt out, reload the private window: the entry is gone.
+   Opt back in so the board is populated for the next demo.
 7. **Sign in as the admin.** `/admin` appears in the nav. Add a coaster, edit
    it, retire it. It vanishes from the enthusiast catalogue while any existing
    rides against it survive.
-8. **The admin's limits.** The admin cannot see the enthusiast's rides — there
-   is no admin policy on `rides` at all. The direct-API suite asserts this.
+8. **The admin's limits.** The admin has their own 5 rides and sees only those.
+   The enthusiast's 13 are invisible — there is no admin policy on `rides` at
+   all. The direct-API suite asserts this.
+
+The two demo accounts are seeded and kept separate from the accounts the test
+suite uses, which it empties on every run. Re-seed with
+`node scripts/create-reviewer-accounts.mjs` if a demo leaves them thin.
 
 If time is short, steps 1, 2, 4, 6, and 8 carry the argument.
 
