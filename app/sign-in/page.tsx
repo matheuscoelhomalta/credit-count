@@ -10,8 +10,11 @@ export default function SignInPage() {
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 px-5 py-12">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
-        <p className="mt-1.5 text-sm opacity-70">
+        <Link className="cc-display text-base" href="/">
+          CREDIT COUNT
+        </Link>
+        <h1 className="cc-display mt-8 text-[2rem]">Sign in</h1>
+        <p className="mt-2 text-sm text-[var(--ink-soft)]">
           Welcome back. Pick up where your credit count left off.
         </p>
       </div>
@@ -19,9 +22,9 @@ export default function SignInPage() {
       <Suspense fallback={null}>
         <SignInForm />
       </Suspense>
-      <p className="text-sm opacity-70">
+      <p className="text-sm text-[var(--ink-soft)]">
         Need an account?{' '}
-        <Link className="underline underline-offset-4" href="/sign-up">
+        <Link className="font-semibold text-[var(--ink)] underline decoration-[var(--signal)] decoration-2 underline-offset-4" href="/sign-up">
           Create one
         </Link>
       </p>

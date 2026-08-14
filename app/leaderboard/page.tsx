@@ -31,50 +31,55 @@ export default async function LeaderboardPage() {
           subtitle="Enthusiasts who chose to share their credit count. Ride history stays private."
         />
       ) : (
-        <header className="flex flex-wrap items-start justify-between gap-4">
+        <header className="flex flex-wrap items-start justify-between gap-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Leaderboard</h1>
-            <p className="mt-1.5 text-sm opacity-70">
+            <Link className="cc-display text-base text-[var(--ink)]" href="/">
+              CREDIT COUNT
+            </Link>
+            <h1 className="cc-display mt-6 text-[2rem] sm:text-[2.5rem]">Leaderboard</h1>
+            <p className="mt-2 max-w-prose text-sm text-[var(--ink-soft)]">
               Enthusiasts who chose to share their credit count. Ride history stays
               private.
             </p>
           </div>
-          <Link
-            className="rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background"
-            href="/sign-up"
-          >
+          <Link className="cc-btn" href="/sign-up">
             Create account
           </Link>
         </header>
       )}
 
       {error && (
-        <p
-          role="alert"
-          className="mt-6 rounded-md border border-red-600/30 p-3 text-sm text-red-600 dark:text-red-400"
-        >
+        <p role="alert" className="cc-alert mt-6 rounded-r">
           The leaderboard could not be loaded.
         </p>
       )}
 
       {!error && rows.length === 0 ? (
-        <p className="mt-8 text-sm opacity-70">
-          Nobody has joined the leaderboard yet.
+        <p className="mt-8 rounded border border-dashed border-[var(--rule-strong)] p-8 text-center text-sm text-[var(--ink-soft)]">
+          Nobody has joined the leaderboard yet. Be the first to share a count.
         </p>
       ) : (
         <ol className="mt-8 flex flex-col gap-2">
           {rows.map((row, index) => (
             <li
               key={`${index}-${row.display_name}`}
-              className="flex items-baseline gap-4 rounded-lg border border-black/10 px-4 py-3 dark:border-white/15"
+              className="cc-surface flex items-center gap-4 px-4 py-3"
             >
-              <span className="w-8 shrink-0 text-sm tabular-nums opacity-60">
+              {/* Rank one gets the plate. Position is the only thing this board
+                  ranks, so it is the only thing worth marking. */}
+              <span
+                className={`cc-data flex h-7 w-7 shrink-0 items-center justify-center rounded-[3px] text-sm ${
+                  index === 0
+                    ? 'border border-[var(--ink)] bg-[var(--signal)] font-bold text-[#2e2e2e]'
+                    : 'text-[var(--ink-soft)]'
+                }`}
+              >
                 {index + 1}
               </span>
-              <span className="flex-1 truncate font-medium">{row.display_name}</span>
+              <span className="flex-1 truncate font-bold">{row.display_name}</span>
               {/* One text node so the count and its unit read as a single
                   phrase to screen readers and assertions alike. */}
-              <span className="shrink-0 tabular-nums">
+              <span className="cc-data shrink-0 text-sm text-[var(--ink-soft)]">
                 {`${row.credit_count} ${row.credit_count === 1 ? 'credit' : 'credits'}`}
               </span>
             </li>
@@ -83,8 +88,11 @@ export default async function LeaderboardPage() {
       )}
 
       {!user && (
-        <p className="mt-8 text-sm opacity-60">
-          <Link className="underline underline-offset-4" href="/">
+        <p className="mt-8 text-sm">
+          <Link
+            className="font-semibold underline decoration-[var(--signal)] decoration-2 underline-offset-4"
+            href="/"
+          >
             Back to home
           </Link>
         </p>

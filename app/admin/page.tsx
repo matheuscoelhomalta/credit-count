@@ -37,7 +37,7 @@ export default async function AdminPage({
           title="Catalogue admin"
           subtitle="Catalogue administration is restricted to designated administrators."
         />
-        <p className="mt-3 text-sm opacity-70">
+        <p className="cc-surface mt-6 p-4 text-sm text-[var(--ink-soft)]">
           This area is for catalogue administrators. If your role was granted
           recently, sign out and back in so your session picks it up.
         </p>
@@ -78,7 +78,7 @@ export default async function AdminPage({
 
       <form className="mt-8 flex gap-2" action="/admin" method="get">
         <input
-          className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base focus:border-black dark:border-white/20 dark:focus:border-white"
+          className="cc-field"
           type="search"
           name="q"
           defaultValue={query}
@@ -86,7 +86,7 @@ export default async function AdminPage({
           placeholder="Search by name, park, or country"
         />
         <button
-          className="shrink-0 rounded-md bg-foreground px-4 py-2 font-medium text-background"
+          className="cc-btn shrink-0"
           type="submit"
         >
           Search
@@ -94,13 +94,13 @@ export default async function AdminPage({
       </form>
 
       {error && (
-        <p role="alert" className="mt-6 text-sm text-red-600 dark:text-red-400">
+        <p role="alert" className="cc-alert mt-6 rounded-r">
           Could not load the catalogue: {error.message}
         </p>
       )}
 
       {coasters.length === 0 ? (
-        <p className="mt-6 rounded-lg border border-dashed border-black/15 p-6 text-center text-sm opacity-70 dark:border-white/20">
+        <p className="mt-6 rounded border border-dashed border-[var(--rule-strong)] p-8 text-center text-sm text-[var(--ink-soft)]">
           No coaster matches that search.
         </p>
       ) : (

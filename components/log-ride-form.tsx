@@ -130,9 +130,9 @@ export function LogRideForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-lg border border-black/10 p-4 dark:border-white/15 sm:p-5"
+      className="rounded border border-[var(--ink)] bg-[var(--surface)] p-4 sm:p-5"
     >
-      <h2 className="text-lg font-semibold">Log a ride</h2>
+      <h2 className="cc-section-title text-lg">Log a ride</h2>
 
       <input type="hidden" name="coasterId" value={selected?.id ?? ''} />
 
@@ -147,12 +147,12 @@ export function LogRideForm({
             }
           }}
         >
-          <label className="mb-1.5 block text-sm font-medium" htmlFor="coaster-search">
+          <label className="cc-eyebrow mb-2 block" htmlFor="coaster-search">
             Coaster
           </label>
           <input
             id="coaster-search"
-            className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base focus:border-black dark:border-white/20 dark:focus:border-white"
+            className="cc-field"
             type="text"
             autoComplete="off"
             placeholder="Search by name, park, country…"
@@ -186,7 +186,7 @@ export function LogRideForm({
             role="listbox"
             aria-label="Matching coasters"
             hidden={!popupOpen}
-            className="absolute z-10 mt-1 max-h-64 w-full overflow-auto rounded-md border border-black/15 bg-background shadow-lg dark:border-white/20"
+            className="absolute z-10 mt-1 max-h-64 w-full overflow-auto rounded-[3px] border-2 border-[var(--ink)] bg-[var(--surface)] shadow-[4px_4px_0_var(--plate-edge)]"
           >
             {matches.map((coaster, index) => (
               <li
@@ -197,10 +197,10 @@ export function LogRideForm({
                 key={coaster.id}
                 role="option"
                 aria-selected={activeIndex === index}
-                className={`cursor-pointer px-3 py-2 text-left text-sm ${
+                className={`cursor-pointer border-l-[3px] px-3 py-2 text-left text-sm ${
                   activeIndex === index
-                    ? 'bg-black/10 dark:bg-white/15'
-                    : 'hover:bg-black/5 dark:hover:bg-white/10'
+                    ? 'border-[var(--signal)] bg-[color-mix(in_srgb,var(--signal)_22%,transparent)]'
+                    : 'border-transparent hover:bg-[color-mix(in_srgb,var(--ink)_6%,transparent)]'
                 }`}
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => chooseCoaster(coaster)}
@@ -214,33 +214,33 @@ export function LogRideForm({
             ))}
           </ul>
           {open && !selected && query.trim() && matches.length === 0 && (
-            <p id={guidanceId} className="mt-1.5 text-sm opacity-70">
+            <p id={guidanceId} className="mt-2 text-sm text-[var(--ink-soft)]">
               No active coaster matches that.
             </p>
           )}
           {query.trim() && !selected && matches.length > 0 && (
-            <p id={guidanceId} className="mt-1.5 text-sm opacity-70">
+            <p id={guidanceId} className="mt-2 text-sm text-[var(--ink-soft)]">
               Choose a coaster from the list.
               {filtered.length > matches.length &&
                 ` Showing the first ${matches.length} of ${filtered.length} matches; keep typing to narrow them.`}
             </p>
           )}
           {selected && (
-            <p className="mt-1.5 text-sm opacity-70">
+            <p className="mt-2 text-sm font-medium">
               Selected: {selected.park}, {selected.country}
             </p>
           )}
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium" htmlFor="riddenOn">
+          <label className="cc-eyebrow mb-2 block" htmlFor="riddenOn">
             Date
           </label>
           <input
             ref={dateRef}
             id="riddenOn"
             name="riddenOn"
-            className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base focus:border-black dark:border-white/20 dark:focus:border-white"
+            className="cc-field"
             type="date"
             required
             // Capping at `today` would lock out anyone east of UTC, who is
@@ -254,13 +254,13 @@ export function LogRideForm({
       </div>
 
       <div className="mt-4">
-        <label className="mb-1.5 block text-sm font-medium" htmlFor="note">
-          Note <span className="font-normal opacity-60">(optional)</span>
+        <label className="cc-eyebrow mb-2 block" htmlFor="note">
+          Note <span className="font-normal tracking-normal opacity-70">(optional)</span>
         </label>
         <input
           id="note"
           name="note"
-          className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base focus:border-black dark:border-white/20 dark:focus:border-white"
+          className="cc-field"
           type="text"
           maxLength={280}
           placeholder="Front row at sunset"
@@ -268,18 +268,21 @@ export function LogRideForm({
       </div>
 
       {error && (
-        <p role="alert" className="mt-3 text-sm text-red-600 dark:text-red-400">
+        <p role="alert" className="cc-alert mt-4 rounded-r">
           {error}
         </p>
       )}
       {status && (
-        <p role="status" className="mt-3 text-sm font-medium">
+        <p
+          role="status"
+          className="mt-4 block w-fit rounded-[3px] border border-[var(--plate-edge)] bg-[var(--signal)] px-3 py-1.5 text-sm font-bold text-[#2e2e2e]"
+        >
           {status}
         </p>
       )}
 
       <button
-        className="mt-4 w-full rounded-md bg-foreground px-4 py-2.5 font-medium text-background disabled:opacity-60 sm:w-auto"
+        className="cc-btn mt-5 w-full sm:w-auto"
         type="submit"
         disabled={pending || !selected}
       >

@@ -84,27 +84,10 @@ export default async function DashboardPage() {
       />
 
       {problems.length > 0 && (
-        <div
-          role="alert"
-          className="mt-6 rounded-md border border-red-600/30 p-3 text-sm text-red-600 dark:text-red-400"
-        >
+        <div role="alert" className="cc-alert mt-6 rounded-r">
           {problems.map((problem) => (
             <p key={problem}>{problem}</p>
           ))}
-        </div>
-      )}
-
-      {/* Only rendered from a profile that actually loaded: a toggle defaulted
-          from missing data could misreport participation. */}
-      {profile && (
-        <div className="mt-6 flex flex-wrap items-start justify-between gap-3 rounded-lg border border-black/10 p-4 dark:border-white/15">
-          <div>
-            <h2 className="text-sm font-semibold">Public leaderboard</h2>
-            <p className="mt-1 text-sm opacity-70">
-              Your rides, dates, and notes are never shared.
-            </p>
-          </div>
-          <LeaderboardToggle optedIn={profile.leaderboard_opt_in} />
         </div>
       )}
 
@@ -114,17 +97,36 @@ export default async function DashboardPage() {
 
         <section>
           <div className="flex items-baseline justify-between gap-3">
-            <h2 className="text-lg font-semibold">Recent rides</h2>
+            <h2 className="cc-section-title text-lg">Recent rides</h2>
             {rides.length > 5 && (
-              <Link className="text-sm underline underline-offset-4" href="/history">
+              <Link
+                className="text-sm font-semibold underline decoration-[var(--signal)] decoration-2 underline-offset-4"
+                href="/history"
+              >
                 View all {rides.length}
               </Link>
             )}
           </div>
-          <div className="mt-3">
+          <div className="mt-4">
             <RideList rides={rides.slice(0, 5)} editable={false} />
           </div>
         </section>
+
+        {/* Sharing is an account setting rather than a dashboard action, so it
+            sits below the log. Only rendered from a profile that actually
+            loaded: a toggle defaulted from missing data could misreport
+            participation. */}
+        {profile && (
+          <div className="cc-surface flex flex-wrap items-start justify-between gap-3 p-4">
+            <div>
+              <h2 className="cc-section-title text-sm">Public leaderboard</h2>
+              <p className="mt-1.5 text-sm text-[var(--ink-soft)]">
+                Your rides, dates, and notes are never shared.
+              </p>
+            </div>
+            <LeaderboardToggle optedIn={profile.leaderboard_opt_in} />
+          </div>
+        )}
       </div>
     </main>
   );

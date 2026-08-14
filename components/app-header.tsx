@@ -29,12 +29,17 @@ export function AppHeader({
 
   return (
     <header>
-      <div className="flex flex-col gap-3 border-b border-black/10 pb-4 dark:border-white/15 sm:flex-row sm:items-center">
-        <Link className="w-fit text-lg font-semibold tracking-tight" href="/dashboard">
-          Credit Count
+      {/* The chrome is an ink plate rather than an edge-to-edge bar: it stays
+          inside the content column, so it cannot overflow at phone width. */}
+      <div className="flex flex-col gap-2.5 rounded bg-[var(--plate)] px-4 py-3 text-[var(--on-plate)] sm:flex-row sm:items-center sm:gap-5">
+        <Link
+          className="cc-display w-fit shrink-0 whitespace-nowrap text-base text-[var(--signal)]"
+          href="/dashboard"
+        >
+          CREDIT COUNT
         </Link>
 
-        <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 sm:ml-auto">
           <nav aria-label="Account navigation" className="flex flex-wrap items-center gap-1">
             {visibleDestinations.map((destination) => {
               const current = destination.id === active;
@@ -42,10 +47,10 @@ export function AppHeader({
                 <Link
                   key={destination.id}
                   aria-current={current ? 'page' : undefined}
-                  className={`rounded-md px-2.5 py-1.5 text-sm ${
+                  className={`rounded-[3px] px-2.5 py-1.5 text-[13px] transition-colors sm:text-sm ${
                     current
-                      ? 'bg-foreground font-semibold text-background'
-                      : 'hover:bg-black/5 dark:hover:bg-white/10'
+                      ? 'bg-[var(--signal)] font-bold text-[#2e2e2e]'
+                      : 'text-[var(--on-plate)]/75 hover:bg-white/10 hover:text-[var(--on-plate)]'
                   }`}
                   href={destination.href}
                 >
@@ -55,9 +60,9 @@ export function AppHeader({
             })}
           </nav>
 
-          <form className="border-l border-black/15 pl-3 dark:border-white/20" action={signOut}>
+          <form className="sm:ml-1 sm:border-l sm:border-white/25 sm:pl-2" action={signOut}>
             <button
-              className="rounded-md px-1.5 py-1.5 text-sm underline-offset-4 hover:underline"
+              className="rounded-[3px] px-2 py-1.5 text-[13px] text-[var(--on-plate)]/75 underline-offset-4 transition-colors hover:text-[var(--on-plate)] hover:underline sm:text-sm"
               type="submit"
             >
               Sign out
@@ -66,9 +71,9 @@ export function AppHeader({
         </div>
       </div>
 
-      <div className="mt-6">
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-        <p className="mt-1.5 text-sm opacity-70">{subtitle}</p>
+      <div className="mt-8">
+        <h1 className="cc-display text-[2rem] sm:text-[2.5rem]">{title}</h1>
+        <p className="mt-2 max-w-prose text-sm text-[var(--ink-soft)]">{subtitle}</p>
       </div>
     </header>
   );

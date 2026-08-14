@@ -58,7 +58,7 @@ export default async function CoastersPage({
       {/* A plain GET form keeps browsing usable without client-side JS. */}
       <form className="mt-6 flex gap-2" action="/coasters" method="get">
         <input
-          className="w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base focus:border-black dark:border-white/20 dark:focus:border-white"
+          className="cc-field"
           type="search"
           name="q"
           defaultValue={query}
@@ -66,7 +66,7 @@ export default async function CoastersPage({
           placeholder="Search by name, park, country, manufacturer, or type"
         />
         <button
-          className="shrink-0 rounded-md bg-foreground px-4 py-2 font-medium text-background"
+          className="cc-btn shrink-0"
           type="submit"
         >
           Search
@@ -74,13 +74,13 @@ export default async function CoastersPage({
       </form>
 
       {error && (
-        <p role="alert" className="mt-6 text-sm text-red-600 dark:text-red-400">
+        <p role="alert" className="cc-alert mt-6 rounded-r">
           Could not load the catalogue: {error.message}
         </p>
       )}
 
       {coasters.length === 0 ? (
-        <p className="mt-6 rounded-lg border border-dashed border-black/15 p-6 text-center text-sm opacity-70 dark:border-white/20">
+        <p className="mt-6 rounded border border-dashed border-[var(--rule-strong)] p-8 text-center text-sm text-[var(--ink-soft)]">
           No active coaster matches that search.
         </p>
       ) : (
@@ -88,13 +88,13 @@ export default async function CoastersPage({
           {coasters.map((coaster) => (
             <li
               key={coaster.id}
-              className="rounded-lg border border-black/10 p-3 dark:border-white/15"
+              className="cc-surface p-3.5 transition-colors hover:border-[var(--ink-soft)]"
             >
-              <p className="font-medium">{coaster.name}</p>
-              <p className="mt-0.5 text-sm opacity-70">
+              <p className="text-base font-bold">{coaster.name}</p>
+              <p className="mt-0.5 text-sm text-[var(--ink-soft)]">
                 {coaster.park}, {coaster.country}
               </p>
-              <p className="mt-0.5 text-sm opacity-60">
+              <p className="cc-data mt-1.5 text-xs text-[var(--ink-soft)]">
                 {coaster.manufacturer} · {coaster.type}
               </p>
             </li>

@@ -1,37 +1,248 @@
 @import "tailwindcss";
 
+/* Station signage: an ink ground for chrome, paper for reading, and one
+   saturated yellow reserved for signals. Yellow is 1.5:1 on paper, so it is
+   only ever a field or type on ink — never text on the page background. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ground: #fffcff;
+  --surface: #fffcff;
+  --ink: #2e2e2e;
+  --ink-soft: #6b6a6b;
+  --rule: #e6e3e6;
+  --rule-strong: #cfcbcf;
+  --signal: #fdcb04;
+  --on-signal: #2e2e2e;
+  --alert: #b3261e;
+
+  /* The plates are the dark object in the design, in both schemes. They must
+     not invert: yellow is 1.5:1 on a light field, so a plate that flipped
+     would take the wordmark and the credit numeral with it. */
+  --plate: #2e2e2e;
+  --on-plate: #fffcff;
+  --plate-edge: #2e2e2e;
+
+  /* Kept so `bg-foreground text-background` keeps meaning what it always did. */
+  --background: var(--ground);
+  --foreground: var(--ink);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #1b1b1b;
+    --surface: #242424;
+    --ink: #f4f1f4;
+    --ink-soft: #a3a1a3;
+    --rule: #383838;
+    --rule-strong: #4a4a4a;
+    --alert: #ff8a80;
+    --plate: #111111;
+    --on-plate: #f4f1f4;
+    --plate-edge: #000000;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-ground: var(--ground);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-rule: var(--rule);
+  --color-signal: var(--signal);
+  --color-alert: var(--alert);
+  --color-plate: var(--plate);
+  --color-on-plate: var(--on-plate);
+  --font-sans: var(--font-archivo);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  font-synthesis-weight: none;
 }
 
-:where(a, button, input, select, textarea):focus-visible {
-  outline: 2px solid var(--foreground);
+/* Focus is a signal, so it uses the signal colour, backed by an ink ring so it
+   survives on the yellow plates and the ink bar alike. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--signal);
   outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--ink);
 }
 
 @media (forced-colors: active) {
-  :where(a, button, input, select, textarea):focus-visible {
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
     outline-color: Highlight;
+    box-shadow: none;
+  }
+}
+
+@layer components {
+  /* Width and weight carry the signage voice. Uppercasing the interface would
+     rewrite accessible names, so the display face never transforms text. */
+  .cc-display {
+    font-weight: 800;
+    font-stretch: 112%;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+  }
+
+  .cc-eyebrow {
+    font-weight: 600;
+    font-stretch: 80%;
+    letter-spacing: 0.16em;
+    font-size: 0.6875rem;
+    line-height: 1.2;
+    color: var(--ink-soft);
+  }
+
+  .cc-data {
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  /* The ride gate stripe. Only the credits plate wears it. */
+  .cc-chevrons {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      var(--signal) 0 8px,
+      transparent 8px 16px
+    );
+  }
+
+  .cc-surface {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+  }
+
+  .cc-field {
+    width: 100%;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--rule-strong);
+    border-radius: 3px;
+    padding: 0.55rem 0.75rem;
+    font-size: 1rem;
+    transition: border-color 120ms ease;
+  }
+
+  .cc-field::placeholder {
+    color: var(--ink-soft);
+  }
+
+  .cc-field:hover {
+    border-color: var(--ink-soft);
+  }
+
+  .cc-field:focus {
+    border-color: var(--ink);
+  }
+
+  /* The primary action is the only yellow field outside the plate and the
+     active tab, which is what makes yellow read as "go" throughout. */
+  .cc-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--signal);
+    color: var(--on-signal);
+    border: 1px solid var(--plate-edge);
+    border-radius: 3px;
+    padding: 0.6rem 1.1rem;
+    font-weight: 700;
+    font-stretch: 96%;
+    letter-spacing: 0.01em;
+    box-shadow: 3px 3px 0 var(--plate-edge);
+    transition:
+      transform 100ms ease,
+      box-shadow 100ms ease;
+  }
+
+  .cc-btn:hover:not(:disabled) {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 var(--plate-edge);
+  }
+
+  .cc-btn:active:not(:disabled) {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--plate-edge);
+  }
+
+  /* Still a button, not a field: a filled slab reads as an action that is
+     currently unavailable, where an outlined box reads as somewhere to type. */
+  .cc-btn:disabled {
+    background: color-mix(in srgb, var(--ink) 10%, transparent);
+    color: var(--ink-soft);
+    border-color: transparent;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  .cc-btn-quiet {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--rule-strong);
+    border-radius: 3px;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition:
+      border-color 120ms ease,
+      background-color 120ms ease;
+  }
+
+  .cc-btn-quiet:hover:not(:disabled) {
+    border-color: var(--ink);
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+  }
+
+  .cc-btn-quiet:disabled {
+    color: var(--ink-soft);
+  }
+
+  .cc-btn-danger {
+    color: var(--alert);
+    border-color: color-mix(in srgb, var(--alert) 45%, transparent);
+  }
+
+  .cc-btn-danger:hover:not(:disabled) {
+    border-color: var(--alert);
+    background: color-mix(in srgb, var(--alert) 8%, transparent);
+  }
+
+  .cc-alert {
+    border-left: 3px solid var(--alert);
+    background: color-mix(in srgb, var(--alert) 7%, transparent);
+    color: var(--alert);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .cc-section-title {
+    font-weight: 700;
+    font-stretch: 104%;
+    letter-spacing: -0.015em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cc-btn,
+  .cc-btn-quiet,
+  .cc-field {
+    transition: none;
+  }
+
+  .cc-btn:hover:not(:disabled),
+  .cc-btn:active:not(:disabled) {
+    transform: none;
   }
 }

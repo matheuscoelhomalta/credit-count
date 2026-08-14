@@ -5,10 +5,8 @@ import { useState, useTransition } from 'react';
 import { createCoaster, setCoasterActive, updateCoaster } from '@/app/admin/actions';
 import type { CoasterSummary } from '@/lib/rides';
 
-const field =
-  'w-full rounded-md border border-black/15 bg-transparent px-3 py-2 text-base focus:border-black dark:border-white/20 dark:focus:border-white';
-const smallButton =
-  'rounded-md border border-black/15 px-2.5 py-1.5 text-sm dark:border-white/20';
+const field = 'cc-field';
+const smallButton = 'cc-btn-quiet';
 
 const FIELDS = [
   { name: 'name', label: 'Name' },
@@ -36,13 +34,13 @@ export function NewCoasterForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-lg border border-black/10 p-4 dark:border-white/15 sm:p-5"
+      className="rounded border border-[var(--ink)] bg-[var(--surface)] p-4 sm:p-5"
     >
-      <h2 className="text-lg font-semibold">Add a coaster</h2>
+      <h2 className="cc-section-title text-lg">Add a coaster</h2>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {FIELDS.map((f) => (
           <div key={f.name}>
-            <label className="mb-1.5 block text-sm font-medium" htmlFor={`new-${f.name}`}>
+            <label className="cc-eyebrow mb-2 block" htmlFor={`new-${f.name}`}>
               {f.label}
             </label>
             <input id={`new-${f.name}`} name={f.name} className={field} type="text" required />
@@ -51,13 +49,13 @@ export function NewCoasterForm() {
       </div>
 
       {error && (
-        <p role="alert" className="mt-3 text-sm text-red-600 dark:text-red-400">
+        <p role="alert" className="cc-alert mt-4 rounded-r">
           {error}
         </p>
       )}
 
       <button
-        className="mt-4 w-full rounded-md bg-foreground px-4 py-2.5 font-medium text-background disabled:opacity-60 sm:w-auto"
+        className="cc-btn mt-5 w-full sm:w-auto"
         type="submit"
         disabled={pending}
       >
@@ -90,7 +88,7 @@ export function CoasterAdminRow({ coaster }: { coaster: CoasterSummary }) {
   }
 
   return (
-    <li className="rounded-lg border border-black/10 p-3 dark:border-white/15">
+    <li className="cc-surface p-3">
       {editing ? (
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input type="hidden" name="coasterId" value={coaster.id} />
@@ -126,18 +124,18 @@ export function CoasterAdminRow({ coaster }: { coaster: CoasterSummary }) {
       ) : (
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="font-medium">
+            <p className="text-base font-bold">
               {coaster.name}
               {!coaster.active && (
-                <span className="ml-2 rounded border border-black/15 px-1.5 py-0.5 text-xs font-normal opacity-70 dark:border-white/20">
+                <span className="cc-eyebrow ml-2 inline-block rounded-[2px] border border-[var(--rule-strong)] px-1.5 py-0.5 align-middle">
                   Retired
                 </span>
               )}
             </p>
-            <p className="mt-0.5 text-sm opacity-70">
+            <p className="mt-0.5 text-sm text-[var(--ink-soft)]">
               {coaster.park}, {coaster.country}
             </p>
-            <p className="mt-0.5 text-sm opacity-60">
+            <p className="cc-data mt-1 text-xs text-[var(--ink-soft)]">
               {coaster.manufacturer} · {coaster.type}
             </p>
           </div>
@@ -165,7 +163,7 @@ export function CoasterAdminRow({ coaster }: { coaster: CoasterSummary }) {
       )}
 
       {error && (
-        <p role="alert" className="mt-2 text-sm text-red-600 dark:text-red-400">
+        <p role="alert" className="cc-alert mt-2 rounded-r">
           {error}
         </p>
       )}

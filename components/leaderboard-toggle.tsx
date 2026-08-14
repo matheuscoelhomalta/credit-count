@@ -26,7 +26,7 @@ export function LeaderboardToggle({ optedIn }: { optedIn: boolean }) {
         onClick={toggle}
         disabled={pending}
         aria-pressed={current}
-        className="rounded-md border border-black/15 px-3 py-2 text-sm dark:border-white/20"
+        className="cc-btn-quiet"
       >
         {pending
           ? 'Saving…'
@@ -34,13 +34,13 @@ export function LeaderboardToggle({ optedIn }: { optedIn: boolean }) {
             ? 'Leave the public leaderboard'
             : 'Join the public leaderboard'}
       </button>
-      <p className="text-xs opacity-60">
+      <p className="text-xs text-[var(--ink-soft)]">
         {current
           ? 'Your display name and credit count are public.'
           : 'Only your display name and credit count would ever be shared.'}
       </p>
       {error && (
-        <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+        <p role="alert" className="cc-alert rounded-r">
           {error}
         </p>
       )}

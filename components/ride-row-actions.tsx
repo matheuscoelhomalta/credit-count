@@ -6,8 +6,7 @@ import { deleteRide, updateRide } from '@/app/rides/actions';
 import { maxAcceptableRideDate } from '@/lib/dates';
 import type { RideWithCoaster } from '@/lib/rides';
 
-const smallButton =
-  'rounded-md border border-black/15 px-2.5 py-1.5 text-sm dark:border-white/20';
+const smallButton = 'cc-btn-quiet';
 
 export function RideRowActions({ ride }: { ride: RideWithCoaster }) {
   const [editing, setEditing] = useState(false);
@@ -55,7 +54,7 @@ export function RideRowActions({ ride }: { ride: RideWithCoaster }) {
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <input
             aria-label="Ride date"
-            className="rounded-md border border-black/15 bg-transparent px-2.5 py-1.5 text-sm dark:border-white/20"
+            className="cc-field py-1.5 text-sm sm:w-auto"
             type="date"
             name="riddenOn"
             required
@@ -64,7 +63,7 @@ export function RideRowActions({ ride }: { ride: RideWithCoaster }) {
           />
           <input
             aria-label="Ride note"
-            className="rounded-md border border-black/15 bg-transparent px-2.5 py-1.5 text-sm dark:border-white/20"
+            className="cc-field py-1.5 text-sm"
             type="text"
             name="note"
             maxLength={280}
@@ -88,7 +87,7 @@ export function RideRowActions({ ride }: { ride: RideWithCoaster }) {
           </div>
         </div>
         {error && (
-          <p role="alert" className="mt-2 text-sm text-red-600 dark:text-red-400">
+          <p role="alert" className="cc-alert mt-2 rounded-r">
             {error}
           </p>
         )}
@@ -99,7 +98,7 @@ export function RideRowActions({ ride }: { ride: RideWithCoaster }) {
   return (
     <div className="flex shrink-0 flex-wrap items-start justify-end gap-2">
       {error && (
-        <p role="alert" className="w-full text-right text-sm text-red-600 dark:text-red-400">
+        <p role="alert" className="cc-alert w-full rounded-r text-right">
           {error}
         </p>
       )}
@@ -118,7 +117,7 @@ export function RideRowActions({ ride }: { ride: RideWithCoaster }) {
         <form onSubmit={handleDelete} className="flex gap-2">
           <input type="hidden" name="rideId" value={ride.id} />
           <button
-            className="rounded-md border border-red-600/40 px-2.5 py-1.5 text-sm text-red-600 dark:text-red-400"
+            className="cc-btn-quiet cc-btn-danger"
             type="submit"
             disabled={pending}
           >

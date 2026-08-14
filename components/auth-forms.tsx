@@ -7,16 +7,14 @@ import { signIn, signUp, type AuthState } from '@/app/auth/actions';
 
 const initialState: AuthState = { error: null };
 
-const fieldClass =
-  'w-full rounded-md border border-black/15 dark:border-white/20 bg-transparent px-3 py-2 text-base focus:border-black dark:focus:border-white';
-const labelClass = 'block text-sm font-medium mb-1.5';
-const submitClass =
-  'w-full rounded-md bg-foreground text-background px-4 py-2.5 font-medium disabled:opacity-60';
+const fieldClass = 'cc-field';
+const labelClass = 'cc-eyebrow block mb-2';
+const submitClass = 'cc-btn w-full';
 
 function ErrorNote({ message }: { message: string | null }) {
   if (!message) return null;
   return (
-    <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+    <p role="alert" className="cc-alert rounded-r">
       {message}
     </p>
   );
@@ -41,7 +39,7 @@ export function SignUpForm() {
           maxLength={40}
           autoComplete="nickname"
         />
-        <p className="mt-1.5 text-xs opacity-70">
+        <p className="mt-2 text-xs text-[var(--ink-soft)]">
           Shown only if you later opt into the public leaderboard.
         </p>
       </div>
@@ -89,7 +87,7 @@ export function SignInForm() {
   return (
     <form action={action} className="flex flex-col gap-4">
       {pendingConfirmation && (
-        <p className="rounded-md border border-black/15 dark:border-white/20 px-3 py-2 text-sm">
+        <p className="rounded-[3px] border-l-[3px] border-[var(--signal)] bg-[color-mix(in_srgb,var(--signal)_14%,transparent)] px-3 py-2 text-sm">
           Check your inbox to confirm your email address, then sign in.
         </p>
       )}

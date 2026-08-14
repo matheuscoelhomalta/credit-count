@@ -77,6 +77,7 @@ These already hold in the codebase. Preserve them unless a ticket explicitly cha
 - **Node is pinned to 22** via `.nvmrc` and `engines`; run tooling under it.
 - **Redirect targets from user input** must be resolved against a fixed origin, rejecting backslash and traversal forms, not prefix-matched.
 - **Authenticated page headers use `components/app-header.tsx`.** Keep the navigation responsive, pass the current destination for `aria-current`, and treat the admin link as cosmetic; catalogue policies remain the authorization boundary.
+- **Presentation runs on the tokens and `cc-*` classes in `app/globals.css`.** Three rules there are load-bearing rather than stylistic: `--signal` yellow is 1.5:1 on the page ground, so it may only ever be a filled field or type on a plate — never text on `--ground`; the `--plate` tokens deliberately stay dark in both colour schemes, because a plate that inverted would take the wordmark and the credit numeral with it; and the display face never uses `text-transform`, since Chromium folds it into accessible names and would break `getByRole({ name })` in the Playwright suites.
 
 ## Engineering discipline
 
